@@ -11,7 +11,7 @@ import './assets/css/iconfont.css';
 
 Vue.prototype.Event = new Vue
 
-axios.defaults.baseURL='http://localhost:8080'
+axios.defaults.baseURL='http://localhost:8181'
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
