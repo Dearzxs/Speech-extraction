@@ -1,8 +1,8 @@
 <template>
   <el-container class="back">
-    <el-header>
-      <div style="float:left;">
-        <h2 style="color: #FFFFFF;margin-left: 50px">文思海辉</h2>
+    <el-header class="header">
+      <div style="float:left;color: #FFFFFF;margin-left: 50px;margin-top: 10px;font-size: 25px">
+        文思海辉
       </div>
       <div style="float:right;">
         <el-link :underline="false">关于我们</el-link>
@@ -278,24 +278,26 @@ export default {
 </script>
 
 <style scoped>
+
 .back {
   /*background-image: linear-gradient(to bottom, #000209, #050092);*/
-  background-color: #181818;
+  background-color: #b8bab8;
   width: 100%;
   height: 100%;
   position: fixed;
   background-size: 100% 100%;
 }
 
-.el-header {
+.header {
   height: 40px;
+  font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
 .el-link {
   margin-top: 20px;
   margin-right: 80px;
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: 17px;
   color: #FFFFFF;
 }
 
@@ -317,7 +319,8 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #242424;
+  background-color: #100f0f;
+  border-radius: 10px;
 }
 
 .audit-line-1 {
@@ -352,7 +355,8 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #242424;
+  background-color: #100f0f;
+  border-radius: 10px;
 }
 
 .audit-edit {
@@ -360,18 +364,23 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #242424;
+  background-color: #100f0f;
+  border-radius: 10px;
 }
 
 .audit-graph-1 {
   width: 920px;
   height: 380px;
+  background-color: #ffc3a0;
+  border-radius: 10px;
 }
 
 .audit-graph-2 {
   margin-top: 30px;
   width: 920px;
   height: 250px;
+  background-color: #ffc3a0;
+  border-radius: 10px;
 }
 
 </style>

@@ -26,27 +26,24 @@
         <p>适用多种格式视频</p>
       </div>
       <div>
-        <el-button class="main-button2" @click="dialogVisible = true">点击进入</el-button>
+        <el-button class="main-button2" @click="dialogVisible = true">开始使用</el-button>
       </div>
 
     </el-main>
 
     <el-dialog title="新建项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-        <el-form-item label="输入项目名称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <p>选择项目尺寸</p>
-      <div class="block">
-        <el-image style="width: 120px; height: 120px" src="./static/image/create1.png"></el-image>
-        <el-image style="width: 120px; height: 120px" src="./static/image/create2.png"></el-image>
-        <el-image style="width: 120px; height: 120px" src="./static/image/create3.png"></el-image>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
+      <el-upload
+        class="upload-demo"
+        ref="upload"
+        action="http://localhost:8181/file/fileUpload/ds"
+        :before-upload="beforeUpload"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :auto-upload="false">
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="newSubmitForm()">上传文件</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过200Mb</div>
+      </el-upload>
     </el-dialog>
   </el-container>
 
@@ -68,7 +65,35 @@ export default {
       }
     };
   },
-  methods: {}
+  methods: {
+    beforeUpload (file) {
+      let fd = new FormData()
+      fd.append('uploadFile', file)
+      this.$http.post('file/fileUpload/ds', fd).then((res) => {
+        console.log('上传成功');
+      }, (res) => {
+        console.log(res)
+      })
+      return false
+    },
+    newSubmitForm () {
+      const that = this;
+      this.$refs.upload.submit();
+      this.$message({
+        message: '上传成功',
+        type: 'success',
+        onClose(){
+          that.$router.push('/project');
+        }
+      });
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    }
+  }
 }
 </script>
 

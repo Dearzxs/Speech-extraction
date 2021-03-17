@@ -4,7 +4,7 @@ import Login from "../components/Login";
 import Main from "../components/Main";
 import Project from "../components/Project";
 import Audit from "../components/Audit";
-import FileUpload from "../components/FileUpload";
+import Test from "../components/Test";
 
 Vue.use(Router)
 
@@ -28,8 +28,8 @@ export default new Router({
       component: Audit
     },
     {
-      path: '/file',
-      component: FileUpload
+      path: '/test',
+      component: Test
     }
   ]
 })

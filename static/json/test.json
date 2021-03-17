@@ -1,0 +1,28 @@
+{
+  "tableData": [
+    {
+      "videoId": "1",
+      "beginTime": "11",
+      "endTime": "22",
+      "text": "这是一段文字1"
+    },
+    {
+      "videoId": "2",
+      "beginTime": "12",
+      "endTime": "23",
+      "text": "这是一段文字2"
+    },
+    {
+      "videoId": "3",
+      "beginTime": "13",
+      "endTime": "24",
+      "text": "这是一段文字3"
+    },
+    {
+      "videoId": "4",
+      "beginTime": "14",
+      "endTime": "25",
+      "text": "这是一段文字4"
+    }
+  ]
+}

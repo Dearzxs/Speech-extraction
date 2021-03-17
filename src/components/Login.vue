@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="back-login">
     <el-form :model="form" :rules="rules" ref="loginForm" label-width="100px" class="login-box">
       <h3 class="login-title">欢迎登录</h3>
       <el-form-item label="账号" prop="username">
@@ -51,11 +51,11 @@ export default {
           username: this.form.username,
           password: this.form.password,
         }
-      ).then(res=>{
-        if(res.data.message === 'SUCCESS'){
+      ).then(res => {
+        if (res.data.message === 'SUCCESS') {
           this.$router.push('/main')
           alert('登陆成功')
-        }else{
+        } else {
           alert('登录失败')
         }
       })
@@ -69,11 +69,21 @@ export default {
 </script>
 
 <style scoped>
+
+.back-login {
+  background-image: linear-gradient(to right, #2193b0, #6dd5ed);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-size: 100% 100%;
+}
+
 .login-box {
   border: 1px solid #DCDFE6;
+  background-color: #FFFFFF;
   width: 350px;
   margin: 180px auto;
-  padding: 35px 35px 15px 35px;
+  padding: 20px 35px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -85,5 +95,4 @@ export default {
   margin: 0 auto 40px auto;
   color: #303133;
 }
-
 </style>
