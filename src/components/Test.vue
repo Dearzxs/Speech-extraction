@@ -28,7 +28,6 @@
       </el-table-column>
     </el-table>
     <el-row>
-      <el-button size="small" type="info" @click="getData()">获取数据</el-button>
       <el-button size="small" type="success" @click="submitForm()">提交</el-button>
     </el-row>
   </div>
@@ -48,12 +47,12 @@ export default {
       showBtnOrdinary: true
     }
   },
+  mounted() {
+    this.getData();
+  },
   methods: {
     getData(){
-      this.$axios.get('http://localhost:8081/static/json/test.json').then((res) => {
-        console.log(res.data);
-        this.tableData = res.data.tableData;
-      })
+      this.tableData = this.$route.query.data
     },
     submitForm() {
       console.log(this.editData);
@@ -82,8 +81,8 @@ export default {
       )
       this.$set(this.showEdit,index,false)
       this.$set(this.showBtn,index,false)
-    }
-  }
+    },
+  },
 
 }
 </script>

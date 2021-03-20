@@ -5,6 +5,7 @@ import Main from "../components/Main";
 import Project from "../components/Project";
 import Audit from "../components/Audit";
 import Test from "../components/Test";
+import Protest from "../components/Protest";
 
 Vue.use(Router)
 
@@ -29,7 +30,12 @@ export default new Router({
     },
     {
       path: '/test',
+      name: 'test',
       component: Test
+    },
+    {
+      path: '/protest',
+      component: Protest
     }
   ]
 })

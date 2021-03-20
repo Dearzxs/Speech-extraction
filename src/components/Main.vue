@@ -62,30 +62,32 @@ export default {
         name: [
           { required: true, message: '请输入项目名称', trigger: 'blur' },
         ]
-      }
+      },
+      loading: false           //加载loading
     };
   },
   methods: {
     beforeUpload (file) {
+      this.loading=true;
       let fd = new FormData()
       fd.append('uploadFile', file)
       this.$http.post('file/fileUpload/ds', fd).then((res) => {
-        console.log('上传成功');
-      }, (res) => {
-        console.log(res)
+        console.log('获取json成功');
+        console.log(res.data)
+        this.tableData = res.data;
+        this.loading = false;
+      });
+      this.$router.push({
+        path: '/test',
+        query: {
+          data: this.tableData
+        }
       })
       return false
     },
     newSubmitForm () {
       const that = this;
       this.$refs.upload.submit();
-      this.$message({
-        message: '上传成功',
-        type: 'success',
-        onClose(){
-          that.$router.push('/project');
-        }
-      });
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);

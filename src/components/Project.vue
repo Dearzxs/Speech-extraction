@@ -76,6 +76,7 @@ export default {
       editData: [],
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
+      tempText: ''
     }
   },
   methods: {
