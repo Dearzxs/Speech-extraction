@@ -35,8 +35,8 @@
       <el-upload
         class="upload-demo"
         ref="upload"
-        action="http://localhost:8181/file/fileUpload/ds"
-        :before-upload="beforeUpload"
+        action
+        :before-upload="solveData"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :auto-upload="false">
@@ -55,46 +55,79 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      tableData: [],
       ruleForm: {
         name: ''
       },
       rules: {
         name: [
-          { required: true, message: '请输入项目名称', trigger: 'blur' },
+          {required: true, message: '请输入项目名称', trigger: 'blur'},
         ]
       },
-      loading: false           //加载loading
+      loading: false,
+      tips: ''
     };
   },
   methods: {
-    beforeUpload (file) {
-      this.loading=true;
-      let fd = new FormData()
-      fd.append('uploadFile', file)
-      this.$http.post('file/fileUpload/ds', fd).then((res) => {
-        console.log('获取json成功');
-        console.log(res.data)
-        this.tableData = res.data;
-        this.loading = false;
-      });
-      this.$router.push({
-        path: '/test',
-        query: {
-          data: this.tableData
-        }
-      })
-      return false
-    },
-    newSubmitForm () {
-      const that = this;
+    newSubmitForm() {
       this.$refs.upload.submit();
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      });
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
     handlePreview(file) {
       console.log(file);
-    }
+    },
+
+    handleReceive: async function (file) {
+      let isSuccess = false;
+      let fd = new FormData();
+      fd.append('uploadFile', file);
+      fd.append('userId', '1');
+      await this.$axios.post('file/fileUpload/ds', fd).then((res) => {
+        if (res.status === 200) {
+          this.tableData = res.data;
+          console.log('成功');
+          isSuccess = true;
+        }
+      }).catch(err => {
+        console.log(err);
+        this.$message({
+          type: "error",
+          message: "系统异常"
+        });
+      });
+      return isSuccess
+    },
+    solveData: async function (file) {
+      const loading = this.$loading({
+        lock: true,
+        text: '视频处理中，请稍后',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      await this.handleReceive(file).then((res)=>{
+        if(res === true){
+          loading.close();
+          this.$router.push({
+            path: '/project',
+            query: {
+              data: this.tableData
+            }
+          })
+        }
+        else {
+          this.$message({
+            type: "error",
+            message: "解析失败，请重新上传"
+          });
+        }
+      })
+    },
   }
 }
 </script>
@@ -161,7 +194,7 @@ export default {
   margin-right: 10px;
   border-style: solid;
   border-width: 1px;
-  border-radius:10px;
+  border-radius: 10px;
   border-color: #82858d;
 }
 </style>

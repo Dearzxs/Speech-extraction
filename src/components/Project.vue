@@ -79,15 +79,15 @@ export default {
       tempText: ''
     }
   },
+  mounted() {
+    this.getData();
+  },
   methods: {
     login() {
       this.$router.push('/login');
     },
     getData() {
-      this.$axios.get('http://localhost:8081/static/json/test.json').then((res) => {
-        console.log(res.data);
-        this.tableData = res.data.tableData;
-      })
+      this.tableData = this.$route.query.data
     },
     submitForm() {
       console.log(this.editData);
