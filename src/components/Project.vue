@@ -116,6 +116,18 @@ export default {
       )
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)
+      this.$axios.post('/api/login',
+        {
+          editData: this.editData,
+        }
+      ).then(res => {
+        if (res.data.message === 'SUCCESS') {
+          this.$router.push('/main')
+          alert('登陆成功')
+        } else {
+          alert('登录失败')
+        }
+      })
     }
   },
   components: {videoView, videoControl}
