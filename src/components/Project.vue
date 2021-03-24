@@ -25,7 +25,7 @@
             label="时间"
             width="100">
             <template slot-scope="scope">
-              <span>{{ scope.row.beginTime }}::{{ scope.row.endTime }}</span>
+              <span>{{ scope.row.beginTime }}-{{ scope.row.endTime }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -51,7 +51,6 @@
           </el-table-column>
         </el-table>
         <el-row>
-          <el-button size="small" type="info" @click="getData()">获取数据</el-button>
           <el-button size="small" type="success" @click="submitForm()">提交</el-button>
         </el-row>
       </div>
@@ -89,8 +88,26 @@ export default {
     getData() {
       this.tableData = this.$route.query.data
     },
+
     submitForm() {
       console.log(this.editData);
+      this.$axios.post('/syn/speech',
+        {
+          editText: this.editData,
+        }
+      ).then(res => {
+        if (res.status === 200) {
+          this.$message({
+            message: '视频合成成功',
+            type: 'success'
+          });
+        } else {
+          this.$message({
+            message: '视频合成失败，请稍后再试',
+            type: 'error'
+          });
+        }
+      })
     },
     //点击编辑
     handleEdit(index, row) {
@@ -116,18 +133,6 @@ export default {
       )
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)
-      this.$axios.post('/api/login',
-        {
-          editData: this.editData,
-        }
-      ).then(res => {
-        if (res.data.message === 'SUCCESS') {
-          this.$router.push('/main')
-          alert('登陆成功')
-        } else {
-          alert('登录失败')
-        }
-      })
     }
   },
   components: {videoView, videoControl}

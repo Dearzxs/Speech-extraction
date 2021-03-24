@@ -200,6 +200,7 @@ export default {
   },
 
   methods: {
+
     //时间进度条移动
     blueBgDown() {
       this.stop();

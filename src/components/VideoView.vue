@@ -50,8 +50,8 @@ export default {
 <style>
 
 .playVideo video {
-  height: 420px;
-  width: 600px;
+  height: 70%;
+  width: 70%;
 }
 </style>
 

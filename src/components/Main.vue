@@ -35,7 +35,7 @@
       <el-upload
         class="upload-demo"
         ref="upload"
-        action
+        action=""
         :before-upload="solveData"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
@@ -56,14 +56,6 @@ export default {
     return {
       dialogVisible: false,
       tableData: [],
-      ruleForm: {
-        name: ''
-      },
-      rules: {
-        name: [
-          {required: true, message: '请输入项目名称', trigger: 'blur'},
-        ]
-      },
       loading: false,
       tips: ''
     };
