@@ -1,7 +1,7 @@
 <template>
   <el-container class="back">
     <el-header class="header">
-      <div style="float:left;color: #FFFFFF;margin-left: 50px;margin-top: 10px;font-size: 25px">
+      <div style="float:left;color: #000000;margin-left: 50px;margin-top: 10px;font-size: 25px">
         文思海辉
       </div>
       <div style="float:right;">
@@ -19,9 +19,9 @@
             <div class="audit-line-text">视频剪辑总次数（次）</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
-          <div class="audit-line-2">{{tvc}}</div>
+          <div class="audit-line-2">{{videoNum}}</div>
           <div class="audit-line-3">
-            <el-button>点击查看统计图</el-button>
+            <el-button @click="viewData1()">点击查看统计图</el-button>
           </div>
         </div>
         <div class="audit-text">
@@ -29,9 +29,9 @@
             <div class="audit-line-text">文本修改总次数</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
-          <div class="audit-line-2">{{tmt}}</div>
+          <div class="audit-line-2">{{textNum}}</div>
           <div class="audit-line-3">
-            <el-button>点击查看统计图</el-button>
+            <el-button @click="newAudit()">点击查看统计图</el-button>
           </div>
         </div>
         <div class="audit-edit">
@@ -39,18 +39,18 @@
             <div class="audit-line-text">编辑总人数</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
-          <div class="audit-line-2">{{tme}}</div>
+          <div class="audit-line-2">{{editPeo}}</div>
           <div class="audit-line-3">
-            <el-button>点击查看详情</el-button>
+            <el-button @click="viewData2()">点击查看详情</el-button>
           </div>
         </div>
       </div>
       <div class="audit-right">
         <div class="audit-graph-1">
-          <div id="main1" style="height:420px"></div>
+          <div id="main1" style="height:420px;" v-show="isShowGraph1"></div>
         </div>
         <div class="audit-graph-2">
-          <div id="main2" style="height:300px"></div>
+          <div id="main2" style="height:300px;" v-show="isShowGraph2"></div>
         </div>
       </div>
     </el-main>
@@ -65,46 +65,41 @@ export default {
   data() {
     return {
       name: "思白",
-      time: "2021/2/9",
-      tvc: "1320",
-      tmt: "3750",
-      tme: "934"
+      time: "2021/2/9",//显示当前时间
+      textNum: '', //文本编辑总次数
+      editPeo: '', //编辑总人数
+      videoNum: '',//视频编辑总次数
+
+      tewDayNum: [],//日编辑人数数据
+      DayNumDay: [],
+      DayNumNum: [],
+
+      mostFiveVideo: [],//编辑次数最多的5个视频
+      VideoCutId: [],
+      VideoCutNum: [],
+
+      isShowGraph1: true,
+      isShowGraph2: true,
+
+
     }
   },
   methods:{
     myDayEdit(){
       // 基于准备好的dom，初始化echarts实例
-      const myChart = echarts.init(document.getElementById('main1'));
+      const myChart1 = echarts.init(document.getElementById('main1'));
 
       // 指定图表的配置项和数据
-      const option = {
+      const option1 = {
         title: {
           text: '日编辑人数',
           textStyle: {
             fontSize: 18,
             fontWeight: 'bolder',
-            color: 'white'          // 主标题文字颜色
+            color: 'black'          // 主标题文字颜色
           },
         },
         tooltip: {},
-        dataset: {
-          // 提供一份数据。
-          source: [
-            ['time'],
-            ['2/1', 43],
-            ['2/2', 56],
-            ['2/3', 79],
-            ['2/4', 136],
-            ['2/5', 86],
-            ['2/6', 53],
-            ['2/7', 67],
-            ['2/8', 46],
-            ['2/9', 84],
-            ['2/10', 79],
-            ['2/11', 121],
-            ['2/12', 92]
-          ]
-        },
         // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
         xAxis: {
           type: 'category',
@@ -118,7 +113,7 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'white'
+              color: 'black'
             }
           },
           axisLine: {            // 坐标轴线
@@ -129,9 +124,11 @@ export default {
               type: 'solid'
             }
           },
+          data:[],
         },
         // 声明一个 Y 轴，数值轴。
         yAxis: {
+          type:'value',
           splitLine: {           // 分隔线
             show: true,        // 默认显示，属性show控制显示与否
             // onGap: null,
@@ -151,7 +148,7 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'white'
+              color: 'black'
             }
           },
           axisLine: {            // 坐标轴线
@@ -175,32 +172,49 @@ export default {
               shadowBlur: 5,
               shadowOffsetX: 3,
               shadowOffsetY: 3
-            }
+            },
+            data:[],
           },
         ]
       };
 
       // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      myChart1.setOption(option1);
+
+      myChart1.showLoading();
+
+      setTimeout(()=>{  //未来让加载动画效果明显,这里加入了setTimeout,实现2s延时
+        myChart1.hideLoading(); //没有加载出来隐藏加载动画
+        myChart1.setOption({  //动画的配置
+          xAxis: [{
+            data: this.DayNumDay
+          }],
+          series: [{
+            data: this.DayNumNum //这里数据是一个数组的形似
+          }]
+        })
+      }, 2000 );
+
+      console.log("日编辑数据加载完成");
     },
     myVideoEdit(){
       // 基于准备好的dom，初始化echarts实例
-      const myChart = echarts.init(document.getElementById('main2'));
+      const myChart2 = echarts.init(document.getElementById('main2'));
       // 指定图表的配置项和数据
-      const option = {
+      const option2 = {
         title: {
           text: '视频编辑总次数',
           textStyle: {
             fontSize: 18,
             fontWeight: 'bolder',
-            color: 'white'          // 主标题文字颜色
+            color: 'black'          // 主标题文字颜色
           },
         },
         tooltip: {},
         legend: {
           data: ['次数'],
           textStyle: {
-            color: 'white'          // 图例文字颜色
+            color: 'black'          // 图例文字颜色
           }
         },
         xAxis: {
@@ -219,13 +233,13 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'white'
+              color: 'black'
             }
           },
         },
         yAxis: {
           type: "category",
-          data: ["视频5", "视频4", "视频3", "视频2", "视频1"],
+          data: [],
           splitLine: {show: false},
           axisLine: {
             show: false
@@ -244,14 +258,14 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'white'
+              color: 'black'
             }
           },
         },
         series: [{
           name: '次数',
           type: 'bar',
-          data: [35, 41, 64, 67, 86],
+          data: [],
           barWidth: 14,
           itemStyle: {
             emphasis: {
@@ -266,12 +280,70 @@ export default {
         ]
       };
       // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      myChart2.setOption(option2);
+
+      myChart2.showLoading();
+
+      setTimeout(()=>{  //未来让加载动画效果明显,这里加入了setTimeout,实现2s延时
+        myChart2.hideLoading(); //没有加载出来隐藏加载动画
+        myChart2.setOption({  //动画的配置
+          yAxis: [{
+            data: this.VideoCutId
+          }],
+          series: [{
+            data: this.VideoCutNum //这里数据是一个数组的形似
+          }]
+        })
+      }, 2000 );
+
+      console.log("视频编辑数据加载完成");
+    },
+    getAllData(){
+      this.$axios.get('http://localhost:8181/audit/page1')
+        .then((res)=>{
+          this.textNum=res.data.textNum;
+          this.editPeo=res.data.editPeo;
+          this.videoNum=res.data.videoNum;
+
+          this.tewDayNum=res.data.tewDayNum;
+          this.mostFiveVideo=res.data.mostFiveVideo;
+
+
+          const sourceData1 = this.tewDayNum;
+          for (const index in sourceData1) {
+            this.DayNumDay.push(sourceData1[index].time);
+            this.DayNumNum.push(sourceData1[index].num);
+          }
+
+          const sourceData2 = this.mostFiveVideo;
+          for (const index in sourceData2) {
+            this.VideoCutId.push('视频'+sourceData2[index].video_id);
+            this.VideoCutNum.push(sourceData2[index].repeats);
+          }
+
+          console.log("数据加载完成");
+
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+    },
+    newAudit(){
+      this.$router.push('/audit2')
+    },
+    viewData1(){
+      this.isShowGraph1=true;
+    },
+    viewData2(){
+      this.isShowGraph2=true;
     }
+  },
+  created() {
+    this.getAllData();
   },
   mounted() {
     this.myVideoEdit();
-    this.myDayEdit();
+    this.myDayEdit();;
   }
 }
 
@@ -281,7 +353,7 @@ export default {
 
 .back {
   /*background-image: linear-gradient(to bottom, #000209, #050092);*/
-  background-color: #b8bab8;
+  background-color: #ffffff;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -298,14 +370,13 @@ export default {
   margin-right: 80px;
   margin-bottom: 20px;
   font-size: 17px;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 .audit-left {
   float: left;
   width: 450px;
   height: 620px;
-  color: #FFFFFF;
 }
 
 .audit-right {
@@ -319,7 +390,8 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #100f0f;
+  background-color: #ffffff;
+  border: 2px solid black;
   border-radius: 10px;
 }
 
@@ -355,7 +427,8 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #100f0f;
+  background-color: #ffffff;
+  border: 2px solid black;
   border-radius: 10px;
 }
 
@@ -364,14 +437,16 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #100f0f;
+  background-color: #ffffff;
+  border: 2px solid black;
   border-radius: 10px;
 }
 
 .audit-graph-1 {
   width: 920px;
   height: 380px;
-  background-color: #ffc3a0;
+  background-color: #ffffff;
+  border: 1px solid black;
   border-radius: 10px;
 }
 
@@ -379,7 +454,8 @@ export default {
   margin-top: 30px;
   width: 920px;
   height: 250px;
-  background-color: #ffc3a0;
+  background-color: #ffffff;
+  border: 1px solid black;
   border-radius: 10px;
 }
 
