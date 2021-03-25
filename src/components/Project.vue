@@ -262,19 +262,46 @@ export default {
     getData() {
       this.tableData = this.$route.query.data
     },
-    submitForm() {
-      console.log(this.editData);
-      this.$axios.post('/syn/speech',this.editData).then(res => {
+    handleReceive: async function () {
+      let isSuccess = false;
+      await this.$axios.post('/syn/speech',this.editData).then((res) => {
         if (res.status === 200) {
           this.$message({
-            message: '视频合成成功',
+            message: '视频处理完成',
             type: 'success'
           });
-        } else {
+          isSuccess = true;
+        }
+      }).catch(err => {
+        console.log(err);
+        this.$message({
+          type: "error",
+          message: "视频处理失败"
+        });
+      });
+      return isSuccess
+    },
+    submitForm: async function () {
+      const loading = this.$loading({
+        lock: true,
+        text: '视频处理中，请稍后',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      await this.handleReceive().then((res)=>{
+        if(res === true){
+          loading.close();
           this.$message({
-            message: '视频合成失败，请稍后再试',
-            type: 'error'
+            type: "success",
+            message: "SUCCESS"
           });
+        }
+        else {
+          this.$message({
+            type: "error",
+            message: "FAIL"
+          });
+          loading.close();
         }
       })
     },

@@ -46,9 +46,6 @@
               <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)"
                          v-if="showBtn[scope.$index]">保存
               </el-button>
-              <el-button size="mini" type="danger" @click="handleCancel(scope.$index, scope.row)"
-                         v-if="showBtn[scope.$index]">取消
-              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -99,7 +96,7 @@
                  @click="signClick(item,index)"></div>
             <div class="blueBg" id="blueBg" ref="timeMove" @mousedown="blueBgDown" @mousemove="blueBgMove"
                  @mouseup="blueBgUp">
-              {{ timeCurrentLeft }}<span class="turnDowm"></span>
+              {{ timeCurrentLeft }}<span class="turnDown"></span>
             </div>
           </div>
 
@@ -132,7 +129,7 @@ export default {
     return {
       projectName: "我的项目",
       tableData: [],
-      editData: [],
+      editData: { editSet:[]},
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
       tempText: '',
@@ -267,11 +264,7 @@ export default {
     },
     submitForm() {
       console.log(this.editData);
-      this.$axios.post('/syn/speech',
-        {
-          editText: this.editData,
-        }
-      ).then(res => {
+      this.$axios.post('/syn/speech',this.editData).then(res => {
         if (res.status === 200) {
           this.$message({
             message: '视频合成成功',
@@ -292,21 +285,10 @@ export default {
       this.$set(this.showEdit, index, true)
       this.$set(this.showBtn, index, true)
     },
-    //点击取消
-    handleCancel(index, row) {
-      this.$set(this.showEdit, index, false)
-      this.$set(this.showBtn, index, false)
-    },
     //点击更新
     handleUpdate(index, row) {
-      this.editData.push(
-        {
-          videoId: row.videoId,
-          beginTime: row.beginTime,
-          endTime: row.endTime,
-          text: row.text
-        }
-      )
+      const jsonStr = {"videoId":row.videoId,"beginTime":row.videoId,"endTime":row.endTime,"text":row.text};
+      this.editData.editSet.push(jsonStr);
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)
     },
@@ -1576,7 +1558,7 @@ footer {
       color: #fff;
     }
 
-    .turnDowm {
+    .turnDown {
       position: absolute;
       width: 0;
       height: 0;
