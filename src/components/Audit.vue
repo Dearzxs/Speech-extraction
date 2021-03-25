@@ -353,7 +353,7 @@ export default {
 
 .back {
   /*background-image: linear-gradient(to bottom, #000209, #050092);*/
-  background-color: #ffffff;
+  background-color: #f1f1f1;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -391,7 +391,6 @@ export default {
   width: 400px;
   height: 190px;
   background-color: #ffffff;
-  border: 2px solid black;
   border-radius: 10px;
 }
 
@@ -428,7 +427,6 @@ export default {
   width: 400px;
   height: 190px;
   background-color: #ffffff;
-  border: 2px solid black;
   border-radius: 10px;
 }
 
@@ -438,7 +436,6 @@ export default {
   width: 400px;
   height: 190px;
   background-color: #ffffff;
-  border: 2px solid black;
   border-radius: 10px;
 }
 
