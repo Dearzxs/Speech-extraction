@@ -129,7 +129,7 @@ export default {
     return {
       projectName: "我的项目",
       tableData: [],
-      editData: [],
+      editData: { editSet:[]},
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
       tempText: '',
@@ -264,9 +264,7 @@ export default {
     },
     submitForm() {
       console.log(this.editData);
-      let fd = new FormData();
-      fd.append('editText', this.editData);
-      this.$axios.post('/syn/speech',fd).then(res => {
+      this.$axios.post('/syn/speech',this.editData).then(res => {
         if (res.status === 200) {
           this.$message({
             message: '视频合成成功',
@@ -289,14 +287,8 @@ export default {
     },
     //点击更新
     handleUpdate(index, row) {
-      this.editData.push(
-        {
-          videoId: row.videoId,
-          beginTime: row.beginTime,
-          endTime: row.endTime,
-          text: row.text
-        }
-      )
+      const jsonStr = {"videoId":row.videoId,"beginTime":row.videoId,"endTime":row.endTime,"text":row.text};
+      this.editData.editSet.push(jsonStr);
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)
     },
