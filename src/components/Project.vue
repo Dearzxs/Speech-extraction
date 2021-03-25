@@ -46,9 +46,6 @@
               <el-button size="mini" type="success" @click="handleUpdate(scope.$index, scope.row)"
                          v-if="showBtn[scope.$index]">保存
               </el-button>
-              <el-button size="mini" type="danger" @click="handleCancel(scope.$index, scope.row)"
-                         v-if="showBtn[scope.$index]">取消
-              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -269,7 +266,7 @@ export default {
       console.log(this.editData);
       this.$axios.post('/syn/speech',
         {
-          editText: this.editData,
+          "editText" : this.editData,
         }
       ).then(res => {
         if (res.status === 200) {
@@ -291,11 +288,6 @@ export default {
       this.showBtn[index] = true;
       this.$set(this.showEdit, index, true)
       this.$set(this.showBtn, index, true)
-    },
-    //点击取消
-    handleCancel(index, row) {
-      this.$set(this.showEdit, index, false)
-      this.$set(this.showBtn, index, false)
     },
     //点击更新
     handleUpdate(index, row) {
