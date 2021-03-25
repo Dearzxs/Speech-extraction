@@ -264,11 +264,9 @@ export default {
     },
     submitForm() {
       console.log(this.editData);
-      this.$axios.post('/syn/speech',
-        {
-          "editText" : this.editData,
-        }
-      ).then(res => {
+      let fd = new FormData();
+      fd.append('editText', this.editData);
+      this.$axios.post('/syn/speech',fd).then(res => {
         if (res.status === 200) {
           this.$message({
             message: '视频合成成功',

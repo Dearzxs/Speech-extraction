@@ -117,6 +117,7 @@ export default {
             type: "error",
             message: "解析失败，请重新上传"
           });
+          loading.close();
         }
       })
     },
