@@ -61,7 +61,6 @@
 import * as echarts from "echarts";
 
 export default {
-  name: "Audit",
   data() {
     return {
       name: "思白",

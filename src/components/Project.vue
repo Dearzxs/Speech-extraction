@@ -257,15 +257,16 @@ export default {
   },
   methods: {
     login() {
-      this.$router.push('/login');
+      this.$router.push('/Login');
     },
     getData() {
-      this.tableData = this.$route.query.data
+      this.tableData = this.$route.params.data
     },
     handleReceive: async function () {
       let isSuccess = false;
       await this.$axios.post('/syn/speech',this.editData).then((res) => {
         if (res.status === 200) {
+          console.log(res.data)
           this.$message({
             message: '视频处理完成',
             type: 'success'

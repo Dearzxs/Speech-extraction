@@ -53,7 +53,7 @@ export default {
         }
       ).then(res => {
         if (res.data.message === 'SUCCESS') {
-          this.$router.push('/main')
+          this.$router.push('/Main')
           alert('登陆成功')
         } else {
           alert('登录失败')

@@ -24,7 +24,6 @@
 import * as echarts from "echarts";
 
 export default {
-  name: "Audit2",
   data() {
     return {
       FiveMostText: [],

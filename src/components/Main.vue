@@ -51,7 +51,6 @@
 
 <script>
 export default {
-  name: "Main",
   data() {
     return {
       dialogVisible: false,
@@ -106,8 +105,8 @@ export default {
         if(res === true){
           loading.close();
           this.$router.push({
-            path: '/project',
-            query: {
+            name: 'Project',
+            params: {
               data: this.tableData
             }
           })
