@@ -1,192 +1,79 @@
 <template>
-  <el-container class="back">
-    <el-header height="70">
-      <div style="float:left;">
-        <h1 style="color: #FFFFFF;margin-left: 50px">文思海辉</h1>
-      </div>
-      <div style="float:right;">
-        <el-link :underline="false">关于我们</el-link>
-        <el-link :underline="false">教程</el-link>
-        <el-link :underline="false">模板库</el-link>
-        <el-link :underline="false">管理</el-link>
-        <el-button size="medium" round class="main-button1" style="background-color: #d7b542">注册</el-button>
-        <el-button size="medium" round class="main-button1" style="background-color: transparent;margin-right: 70px">
-          登录
-        </el-button>
-      </div>
-    </el-header>
-    <el-main>
-      <div class="main-p-1">
-        <p>在这里</p>
-        <p>轻松掌握视频剪辑的技能</p>
-      </div>
-      <div class="main-p-2">
-        <p>音频转化文本</p>
-        <p>高效修改音频</p>
-        <p>适用多种格式视频</p>
-      </div>
-      <div>
-        <el-button class="main-button2" @click="dialogVisible = true">开始使用</el-button>
-      </div>
-
-    </el-main>
-
-    <el-dialog title="新建项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
-      <el-upload
-        class="upload-demo"
-        ref="upload"
-        action=""
-        :before-upload="solveData"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="newSubmitForm()">上传文件</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过200Mb</div>
-      </el-upload>
-    </el-dialog>
-  </el-container>
-
+  <div>
+    <el-button @click="updateInfo">提交</el-button>
+    <el-table :data="tableDates">
+      <el-table-column label="title">
+        <template slot-scope="scope">
+          <span>{{ scope.row.title }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="text">
+        <template slot-scope="scope">
+          <span v-if="showEdit[scope.$index]"><el-input size="mini" v-model="scope.row.text"></el-input></span>
+          <span v-if="!showEdit[scope.$index]">{{ scope.row.text }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button @click="edit(scope.row,scope.$index)" v-if="!showBtn[scope.$index]">编辑</el-button>
+          <el-button @click="save(scope.row,scope.$index)" v-if="showBtn[scope.$index]">保存</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
-
 <script>
+import Vue from 'vue'
+
 export default {
   data() {
     return {
-      dialogVisible: false,
-      tableData: [],
-      loading: false,
-      tips: ''
-    };
+      tableDates: [],
+      rawData: [],	// 获取表单时clone的原始数据
+      diffData: [],	// 差异
+      showEdit: [], //显示编辑框
+      showBtn: [],  //显示编辑按钮
+    }
+  },
+  mounted() {
+    this.tableDates = [
+      {title: '标题1', text: 's111'},
+      {title: '标题2', text: 's222'},
+    ]
+    this.rawData = JSON.parse(JSON.stringify(this.tableDates));
   },
   methods: {
-    newSubmitForm() {
-      this.$refs.upload.submit();
-      this.$message({
-        message: '上传成功',
-        type: 'success'
-      });
+    edit(row, index) {
+      console.log("传入参数为" + row.title + "和" + index)
+      this.showEdit[index] = true;
+      this.showBtn[index] = true;
+      this.$set(this.showEdit, index, true)
+      this.$set(this.showBtn, index, true)
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    save(row, index){
+      this.$set(this.showEdit, index, false)
+      this.$set(this.showBtn, index, false)
     },
-    handlePreview(file) {
-      console.log(file);
+    diffFormData () {
+      for (let k in this.rawData) {
+         if(this.rawData.hasOwnProperty(k)){
+           console.log("源数据为:"+this.rawData[k].text+",提交数据为:"+this.tableDates[k].text)
+          if (this.rawData[k].text !== this.tableDates[k].text) {
+            const jsonStr = {"title":this.tableDates[k].title,"text":this.tableDates[k].text};
+            this.diffData.push(jsonStr)
+          }
+         }
+      }
     },
-
-    handleReceive: async function (file) {
-      let isSuccess = false;
-      let fd = new FormData();
-      fd.append('uploadFile', file);
-      fd.append('userId', '1');
-      await this.$axios.post('file/index', fd).then((res) => {
-        if (res.status === 200) {
-          this.tableData = res.data;
-          console.log('成功');
-          isSuccess = true;
-        }
-      }).catch(err => {
-        console.log(err);
-        this.$message({
-          type: "error",
-          message: "系统异常"
-        });
-      });
-      return isSuccess
-    },
-    solveData: async function (file) {
-      const loading = this.$loading({
-        lock: true,
-        text: '视频处理中，请稍后',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-      await this.handleReceive(file).then((res)=>{
-        if(res === true){
-          loading.close();
-          this.$router.push({
-            name: 'Project',
-            params: {
-              data: this.tableData
-            }
-          })
-        }
-        else {
-          this.$message({
-            type: "error",
-            message: "解析失败，请重新上传"
-          });
-          loading.close();
-        }
-      })
-    },
-  }
+    updateInfo () {
+      this.diffFormData()
+      if (!this.diffData) {
+        this.$message.error('未修改任何数据，无需提交')
+      } else {
+        this.$message.success('修改了数据，提交成功')
+        console.log(this.diffData)
+      }
+    }
+  },
 }
 </script>
-
-<style scoped>
-.back {
-  background-color: #000000;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background-size: 100% 100%;
-}
-
-.main-p-1 {
-  letter-spacing: 8px;
-  margin-left: 150px;
-  margin-top: 120px;
-  color: #FFFFFF;
-  font-size: 32px;
-}
-
-.main-p-2 {
-  margin-left: 150px;
-  margin-top: 80px;
-  color: #FFFFFF;
-  font-size: 14px;
-}
-
-.el-header {
-  margin-top: 20px;
-}
-
-.el-link {
-  margin-top: 20px;
-  margin-right: 80px;
-  margin-bottom: 20px;
-  font-size: 16px;
-  color: #FFFFFF;
-}
-
-.main-button1 {
-  width: 140px;
-  height: 45px;
-  font-size: 18px;
-  color: #FFFFFF;
-}
-
-.main-button2 {
-  margin-left: 165px;
-  margin-top: 45px;
-  width: 150px;
-  height: 50px;
-  font-size: 19px;
-  color: #FFFFFF;
-  background-color: #d7b542;
-  border-radius: 10px;
-}
-
-.block {
-  margin: 30px 10px 5px 10px;
-}
-
-.el-image {
-  margin-right: 10px;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 10px;
-  border-color: #82858d;
-}
-</style>

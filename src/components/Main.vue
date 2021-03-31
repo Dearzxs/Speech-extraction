@@ -105,9 +105,10 @@ export default {
         if(res === true){
           loading.close();
           this.$router.push({
-            name: 'Project',
-            params: {
-              data: this.tableData
+            // path: '/project',
+            path: '/solveVideo',
+            query: {
+              tableData: this.tableData
             }
           })
         }

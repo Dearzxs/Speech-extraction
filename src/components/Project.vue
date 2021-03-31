@@ -132,7 +132,7 @@ export default {
       editData: { editSet:[]},
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
-      tempText: '',
+      VideoAddress: '',
 
 
       //时间线控件
@@ -260,12 +260,13 @@ export default {
       this.$router.push('/Login');
     },
     getData() {
-      this.tableData = this.$route.params.data
+      this.tableData = this.$route.query.tableData
     },
     handleReceive: async function () {
       let isSuccess = false;
       await this.$axios.post('/syn/speech',this.editData).then((res) => {
         if (res.status === 200) {
+          this.VideoAddress=res.data;
           console.log(res.data)
           this.$message({
             message: '视频处理完成',
@@ -292,10 +293,12 @@ export default {
       await this.handleReceive().then((res)=>{
         if(res === true){
           loading.close();
-          this.$message({
-            type: "success",
-            message: "SUCCESS"
-          });
+          this.$router.push({
+            path: '/playVideo',
+            query: {
+              VideoAddress: this.VideoAddress
+            }
+          })
         }
         else {
           this.$message({
@@ -315,7 +318,7 @@ export default {
     },
     //点击更新
     handleUpdate(index, row) {
-      const jsonStr = {"videoId":row.videoId,"beginTime":row.videoId,"endTime":row.endTime,"text":row.text};
+      const jsonStr = {"videoId":row.videoId,"beginTime":row.beginTime,"endTime":row.endTime,"text":row.text};
       this.editData.editSet.push(jsonStr);
       this.$set(this.showEdit, index, false)
       this.$set(this.showBtn, index, false)

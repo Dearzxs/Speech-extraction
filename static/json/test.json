@@ -1,28 +1,20 @@
 {
-  "tableData": [
+  "videoId":"1",
+  "diffData":[
     {
-      "videoId": "1",
-      "beginTime": "11",
-      "endTime": "22",
-      "text": "这是一段文字1"
+      "beginTime":1,
+      "endTime":2,
+      "text":"3"
     },
     {
-      "videoId": "2",
-      "beginTime": "12",
-      "endTime": "23",
-      "text": "这是一段文字2"
+      "beginTime":3,
+      "endTime":4,
+      "text":"5"
     },
     {
-      "videoId": "3",
-      "beginTime": "13",
-      "endTime": "24",
-      "text": "这是一段文字3"
-    },
-    {
-      "videoId": "4",
-      "beginTime": "14",
-      "endTime": "25",
-      "text": "这是一段文字4"
+      "beginTime":5,
+      "endTime":6,
+      "text":"7"
     }
   ]
 }

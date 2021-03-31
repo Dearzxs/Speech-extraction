@@ -8,6 +8,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import './assets/css/iconfont.css';
+import VideoPlayer from 'vue-video-player'
+import 'vue-video-player/src/custom-theme.css'
+import 'video.js/dist/video-js.css'
 
 Vue.prototype.Event = new Vue
 
@@ -17,6 +20,7 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
+Vue.use(VideoPlayer)
 
 /* eslint-disable no-new */
 new Vue({

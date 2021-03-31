@@ -7,6 +7,8 @@ import Audit from "../components/Audit";
 import Test from "../components/Test";
 import Audit2 from "../components/Audit2";
 import Test3 from "../components/Test3";
+import PlayVideo from "../components/PlayVideo";
+import SolveVideo from "../components/SolveVideo";
 
 Vue.use(Router)
 
@@ -39,6 +41,11 @@ export default new Router({
       component: Audit2
     },
     {
+      path: '/playVideo',
+      name: 'PlayVideo',
+      component: PlayVideo
+    },
+    {
       path: '/test',
       name: 'Test',
       component: Test
@@ -47,6 +54,11 @@ export default new Router({
       path: '/test3',
       name: 'Test3',
       component: Test3
+    },
+    {
+      path: '/solveVideo',
+      name: 'SolveVideo',
+      component: SolveVideo
     }
   ]
 })
