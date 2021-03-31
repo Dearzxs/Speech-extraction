@@ -35,13 +35,16 @@
       <el-upload
         class="upload-demo"
         ref="upload"
-        action=""
-        :before-upload="solveData"
-        :on-preview="handlePreview"
+        :on-change="changFile"
         :on-remove="handleRemove"
-        :auto-upload="false">
+        :file-list="fileList"
+        action=""
+        :auto-upload="false"
+        multiple
+        :limit="5"
+        >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px;" size="small" type="success" @click="newSubmitForm()">上传文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" @click="solveData()">上传文件</el-button>
         <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过200Mb</div>
       </el-upload>
     </el-dialog>
@@ -54,36 +57,53 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      tableData: [],
       loading: false,
+      fileList: [],
+      uploadForm:null,
       tips: ''
     };
   },
   methods: {
-    newSubmitForm() {
-      this.$refs.upload.submit();
-      this.$message({
-        message: '上传成功',
-        type: 'success'
-      });
+    changFile(file, fileList) {
+      // console.log(fileList);
+      //选择文件后，给fileList对象赋值
+      this.fileList = fileList;
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
+      //删除文件后，给fileList对象赋值
+      this.fileList = fileList;
+
     },
 
-    handleReceive: async function (file) {
-      let isSuccess = false;
-      let fd = new FormData();
-      fd.append('uploadFile', file);
-      fd.append('userId', '1');
-      await this.$axios.post('file/fileUpload/ds', fd).then((res) => {
+    solveData() {
+      const loading = this.$loading({
+        lock: true,
+        text: '视频处理中，请稍后',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      this.uploadForm = new FormData();
+      for (let i = 0; i < this.fileList.length; i++) {
+        this.uploadForm.append('uploadFile', this.fileList[i].raw);
+      }
+      this.uploadForm.append("userId", 1);
+      this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
         if (res.status === 200) {
-          this.tableData = res.data;
-          console.log('成功');
-          isSuccess = true;
+          const jsonArr = res.data;
+          sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
+          this.$message({
+            type: "success",
+            message: "上传成功,即将跳转"
+          });
+          loading.close();
+          this.$router.push('/solveVideo');
+        }
+        else{
+          this.$message({
+            type: "error",
+            message: "解析失败，请重新上传"
+          });
+          loading.close();
         }
       }).catch(err => {
         console.log(err);
@@ -91,35 +111,8 @@ export default {
           type: "error",
           message: "系统异常"
         });
+        loading.close();
       });
-      return isSuccess
-    },
-    solveData: async function (file) {
-      const loading = this.$loading({
-        lock: true,
-        text: '视频处理中，请稍后',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-      await this.handleReceive(file).then((res)=>{
-        if(res === true){
-          loading.close();
-          this.$router.push({
-            // path: '/project',
-            path: '/solveVideo',
-            query: {
-              tableData: this.tableData
-            }
-          })
-        }
-        else {
-          this.$message({
-            type: "error",
-            message: "解析失败，请重新上传"
-          });
-          loading.close();
-        }
-      })
     },
   }
 }

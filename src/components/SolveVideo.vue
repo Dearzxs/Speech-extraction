@@ -14,51 +14,87 @@
     </el-header>
     <el-main>
       <div class="project-main1">
-        <div class="playVideo">
-          <video src="../assets/video/java.mp4" id="myVideo"></video>
-        </div>
+        <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
       </div>
       <div class="project-main2">
-        <el-table :data="tableData" style="width: 100%" max-height="400">
-          <el-table-column label="时间" width="100">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          max-height="400">
+          <el-table-column
+            label="时间"
+            width="100">
             <template slot-scope="scope">
               <span>{{ scope.row.beginTime }}-{{ scope.row.endTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="文本" width="280">
+          <el-table-column
+            label="文本"
+            width="280">
             <template slot-scope="scope">
-              <span v-if="showEdit[scope.$index]"><el-input size="mini" v-model="scope.row.text"></el-input></span>
+              <input class="edit-cell" v-if="showEdit[scope.$index]" v-model="scope.row.text">
               <span v-if="!showEdit[scope.$index]">{{ scope.row.text }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" @click="edit(scope.row,scope.$index)" v-if="!showBtn[scope.$index]">编辑</el-button>
-              <el-button size="mini" type="success" @click="save(scope.row,scope.$index)" v-if="showBtn[scope.$index]">保存</el-button>
+              <el-button size="mini" @click="edit(scope.row, scope.$index)" v-if="!showBtn[scope.$index]">
+                编辑
+              </el-button>
+              <el-button size="mini" type="success" @click="save(scope.row, scope.$index)"
+                         v-if="showBtn[scope.$index]">保存
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </el-main>
-    <el-button @click="submitForm">提交</el-button>
+    <el-footer>
+      <el-button  @click="submitForm" class="project-button2">提交</el-button>
+    </el-footer>
   </el-container>
 </template>
 
 <script>
 
 export default {
+  name: "Project",
   data() {
     return {
       projectName: "我的项目",
       tableData: [],
       editData: {
         videoId:'1',
-        diffData: [],	// 差异
+        diffData:[]
       },
-      rawData: [],	// 获取表单时clone的原始数据
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
       VideoAddress: '',
+      videoId: '1',
+
+      playerOptions: {
+        playbackRates: [0.7, 1.0, 1.5, 2.0], // 播放速度
+        autoplay: false, // 如果true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 导致视频一结束就重新开始。
+        preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: 'zh-CN',
+        aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [{
+          type: 'video/mp4', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
+          src: './static/video/java.mp4' // url地址
+        }],
+        poster: '', // 你的封面地址
+        width: document.documentElement.clientWidth, // 播放器宽度
+        notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: true,
+          durationDisplay: true,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true // 全屏按钮
+        }
+      }
     }
   },
   mounted() {
@@ -69,40 +105,26 @@ export default {
       this.$router.push('/Login');
     },
     getData() {
-      this.tableData = this.$route.query.tableData//接收数据
+      const userJsonStr = sessionStorage.getItem('sourceText');
+      const jsonArr = JSON.parse(userJsonStr);
+      this.tableData=jsonArr;
       this.rawData = JSON.parse(JSON.stringify(this.tableData));//深拷贝
     },
-    handleReceive: async function () {
-      let isSuccess = false;
-      await this.$axios.post('/syn/speech',this.editData).then((res) => {
-        if (res.status === 200) {
-          this.VideoAddress=res.data;
-          console.log(res.data)
-          this.$message({
-            message: '视频处理完成',
-            type: 'success'
-          });
-          isSuccess = true;
-        }
-      }).catch(err => {
-        console.log(err);
-        this.$message({
-          type: "error",
-          message: "视频处理失败"
-        });
-      });
-      return isSuccess
-    },
-    submitForm: async function () {
+    submitForm(){
       const loading = this.$loading({
         lock: true,
         text: '视频处理中，请稍后',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       });
-      this.diffFormData()
-      await this.handleReceive().then((res)=>{
-        if(res === true){
+      this.diffFormData();
+      this.$axios.post('/syn/speech',this.editData).then((res) => {
+        if (res.status === 200) {
+          this.VideoAddress=res.data;
+          this.$message({
+            message: '视频处理完成',
+            type: 'success'
+          });
           loading.close();
           this.$router.push({
             path: '/playVideo',
@@ -112,13 +134,20 @@ export default {
           })
         }
         else {
+          loading.close();
           this.$message({
             type: "error",
-            message: "FAIL"
+            message: "视频处理失败"
           });
-          loading.close();
         }
-      })
+      }).catch(err => {
+        console.log(err);
+        loading.close();
+        this.$message({
+          type: "error",
+          message: "视频处理失败"
+        });
+      });
     },
 
     edit(row, index) {
@@ -212,8 +241,8 @@ export default {
 .project-main1 {
   float: left;
   width: 50%;
-  height: 95%;
-  background-color: #ffffff;
+  height: 80%;
+  //background-color: #ffffff;
   text-align: center;
   border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -224,7 +253,7 @@ export default {
   margin-left: 10px;
   float: right;
   width: 45%;
-  height: 95%;
+  height: 80%;
   background-color: #ffffff;
   text-align: center;
   border-radius: 10px;
@@ -232,9 +261,11 @@ export default {
   -moz-border-radius: 10px;
 }
 
-.playVideo video {
-  height: 70%;
-  width: 70%;
+.video-js .vjs-icon-placeholder {
+  display: block;
 }
 
+.el-footer {
+  text-align: center;
+}
 </style>
