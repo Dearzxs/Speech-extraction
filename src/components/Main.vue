@@ -72,7 +72,6 @@ export default {
     handleRemove(file, fileList) {
       //删除文件后，给fileList对象赋值
       this.fileList = fileList;
-
     },
 
     solveData() {
@@ -93,25 +92,25 @@ export default {
           sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
           this.$message({
             type: "success",
-            message: "上传成功,即将跳转"
+            message: "上传成功"
           });
           loading.close();
           this.$router.push('/solveVideo');
         }
         else{
+          loading.close();
           this.$message({
             type: "error",
             message: "解析失败，请重新上传"
           });
-          loading.close();
         }
       }).catch(err => {
         console.log(err);
+        loading.close();
         this.$message({
           type: "error",
-          message: "系统异常"
+          message: "发送请求失败，请检查网络连接"
         });
-        loading.close();
       });
     },
   }
@@ -162,7 +161,7 @@ export default {
 }
 
 .main-button2 {
-  margin-left: 165px;
+  margin-left: 150px;
   margin-top: 45px;
   width: 150px;
   height: 50px;

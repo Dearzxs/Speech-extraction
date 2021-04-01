@@ -19,24 +19,24 @@
       <div class="project-main2">
         <el-table
           :data="tableData"
-          style="width: 100%"
-          max-height="400">
+          style="width: 99%"
+          max-height="500">
           <el-table-column
-            label="时间"
-            width="100">
+            label="时间(mm:ss:SSS)"
+            width="200">
             <template slot-scope="scope">
-              <span>{{ scope.row.beginTime }}-{{ scope.row.endTime }}</span>
+              <span>{{ scope.row.bgTime }}-{{ scope.row.edTime }}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="文本"
-            width="280">
+            >
             <template slot-scope="scope">
-              <input class="edit-cell" v-if="showEdit[scope.$index]" v-model="scope.row.text">
-              <span v-if="!showEdit[scope.$index]">{{ scope.row.text }}</span>
+              <input class="edit-cell" v-if="showEdit[scope.$index]" v-model="scope.row.textPara.text">
+              <span v-if="!showEdit[scope.$index]">{{ scope.row.textPara.text }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="150" fixed="right">
+          <el-table-column label="操作" width="100" fixed="right">
             <template slot-scope="scope">
               <el-button size="mini" @click="edit(scope.row, scope.$index)" v-if="!showBtn[scope.$index]">
                 编辑
@@ -50,7 +50,7 @@
       </div>
     </el-main>
     <el-footer>
-      <el-button  @click="submitForm" class="project-button2">提交</el-button>
+      <el-button  @click="submitForm" round icon="el-icon-upload" class="project-button2">提交</el-button>
     </el-footer>
   </el-container>
 </template>
@@ -58,15 +58,12 @@
 <script>
 
 export default {
-  name: "Project",
   data() {
     return {
       projectName: "我的项目",
       tableData: [],
-      editData: {
-        videoId:'1',
-        diffData:[]
-      },
+      rawData: [],
+      editData: [],
       showEdit: [], //显示编辑框
       showBtn: [],  //显示编辑按钮
       VideoAddress: '',
@@ -106,8 +103,8 @@ export default {
     },
     getData() {
       const userJsonStr = sessionStorage.getItem('sourceText');
-      const jsonArr = JSON.parse(userJsonStr);
-      this.tableData=jsonArr;
+      this.tableData=JSON.parse(userJsonStr);
+      console.log(this.tableData);
       this.rawData = JSON.parse(JSON.stringify(this.tableData));//深拷贝
     },
     submitForm(){
@@ -151,7 +148,6 @@ export default {
     },
 
     edit(row, index) {
-      console.log("传入参数为" + row.title + "和" + index)
       this.showEdit[index] = true;
       this.showBtn[index] = true;
       this.$set(this.showEdit, index, true)
@@ -164,13 +160,16 @@ export default {
     diffFormData () {
       for (let k in this.rawData) {
         if(this.rawData.hasOwnProperty(k)){
-          if (this.rawData[k].text !== this.tableData[k].text) {
+          if (this.rawData[k].textPara.text !== this.tableData[k].textPara.text) {
             const jsonStr = {
-              "beginTime":this.tableData[k].beginTime,
-              "endTime":this.tableData[k].endTime,
-              "text":this.tableData[k].text
+              'textId':this.tableData[k].textId,
+              'text':this.tableData[k].text,
+              'beginTime':this.tableData[k].beginTime,
+              'endTime':this.tableData[k].endTime,
+              'videoId':this.tableData[k].videoId,
+              'textNum':this.tableData[k].textNum,
             };
-            this.editData.diffData.push(jsonStr)
+            this.editData.push(jsonStr)
           }
         }
       }
@@ -239,9 +238,10 @@ export default {
 }
 
 .project-main1 {
+  margin-top: 1%;
   float: left;
-  width: 50%;
-  height: 80%;
+  width: 45%;
+  height: 90%;
   //background-color: #ffffff;
   text-align: center;
   border-radius: 10px;
@@ -249,16 +249,27 @@ export default {
   -moz-border-radius: 10px;
 }
 
+.video-player {
+  margin-top: 8%;
+  margin-bottom: 4%;
+}
+
 .project-main2 {
-  margin-left: 10px;
+  margin-top: 1%;
+  margin-left: 5px;
   float: right;
-  width: 45%;
-  height: 80%;
+  width: 50%;
+  height: 90%;
   background-color: #ffffff;
   text-align: center;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
+}
+
+.el-table {
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 .video-js .vjs-icon-placeholder {
@@ -267,5 +278,11 @@ export default {
 
 .el-footer {
   text-align: center;
+}
+
+.project-button2 {
+  width: 150px;
+  height: 50px;
+  font-size: 18px;
 }
 </style>

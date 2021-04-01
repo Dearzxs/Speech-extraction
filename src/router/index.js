@@ -2,11 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from "../components/Login";
 import Main from "../components/Main";
-import Project from "../components/Project";
 import Audit from "../components/Audit";
 import Test from "../components/Test";
-import Audit2 from "../components/Audit2";
-import Test3 from "../components/Test3";
+import AuditSenior from "../components/AuditSenior";
 import PlayVideo from "../components/PlayVideo";
 import SolveVideo from "../components/SolveVideo";
 
@@ -26,19 +24,14 @@ export default new Router({
       component: Login
     },
     {
-      path: '/project',
-      name: 'Project',
-      component: Project
-    },
-    {
       path: '/audit',
       name: 'Audit',
       component: Audit
     },
     {
-      path: '/audit2',
-      name: 'Audit2',
-      component: Audit2
+      path: '/auditSenior',
+      name: 'AuditSenior',
+      component: AuditSenior
     },
     {
       path: '/playVideo',
@@ -49,11 +42,6 @@ export default new Router({
       path: '/test',
       name: 'Test',
       component: Test
-    },
-    {
-      path: '/test3',
-      name: 'Test3',
-      component: Test3
     },
     {
       path: '/solveVideo',
