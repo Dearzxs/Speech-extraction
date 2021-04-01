@@ -7,6 +7,7 @@ import Test from "../components/Test";
 import AuditSenior from "../components/AuditSenior";
 import PlayVideo from "../components/PlayVideo";
 import SolveVideo from "../components/SolveVideo";
+import typeWriter from "../components/typeWriter";
 
 Vue.use(Router)
 
@@ -14,7 +15,7 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/main',
+      path: '/',
       name: 'Main',
       component: Main
     },
@@ -22,6 +23,16 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/playVideo',
+      name: 'PlayVideo',
+      component: PlayVideo
+    },
+    {
+      path: '/solveVideo',
+      name: 'SolveVideo',
+      component: SolveVideo
     },
     {
       path: '/audit',
@@ -34,19 +45,14 @@ export default new Router({
       component: AuditSenior
     },
     {
-      path: '/playVideo',
-      name: 'PlayVideo',
-      component: PlayVideo
-    },
-    {
       path: '/test',
       name: 'Test',
       component: Test
     },
     {
-      path: '/solveVideo',
-      name: 'SolveVideo',
-      component: SolveVideo
+      path: '/typeWriter',
+      name: 'TypeWriter',
+      component: typeWriter
     }
   ]
 })
