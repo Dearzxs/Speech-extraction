@@ -71,7 +71,7 @@ export default {
 <style scoped>
 
 .back-login {
-  background-image: linear-gradient(to right, #2193b0, #6dd5ed);
+  background-image: linear-gradient(to right, #16222A, #3A6073);
   width: 100%;
   height: 100%;
   position: fixed;

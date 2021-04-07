@@ -115,6 +115,7 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       });
       this.diffFormData();
+      console.log(this.editData);
       this.$axios.post('/syn/speech',this.editData).then((res) => {
         if (res.status === 200) {
           this.VideoAddress=res.data;
@@ -162,12 +163,12 @@ export default {
         if(this.rawData.hasOwnProperty(k)){
           if (this.rawData[k].textPara.text !== this.tableData[k].textPara.text) {
             const jsonStr = {
-              'textId':this.tableData[k].textId,
-              'text':this.tableData[k].text,
-              'beginTime':this.tableData[k].beginTime,
-              'endTime':this.tableData[k].endTime,
-              'videoId':this.tableData[k].videoId,
-              'textNum':this.tableData[k].textNum,
+              'textId':this.tableData[k].textPara.textId,
+              'text':this.tableData[k].textPara.text,
+              'beginTime':this.tableData[k].textPara.beginTime,
+              'endTime':this.tableData[k].textPara.endTime,
+              'videoId':this.tableData[k].textPara.videoId,
+              'textNum':this.tableData[k].textPara.textNum,
             };
             this.editData.push(jsonStr)
           }
