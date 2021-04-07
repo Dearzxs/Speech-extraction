@@ -9,14 +9,14 @@
         <el-link :underline="false">教程</el-link>
         <el-link :underline="false">模板库</el-link>
         <el-link :underline="false">管理</el-link>
-        <el-link :underline="false">{{ name }}老师,欢迎你</el-link>
+        <el-link :underline="false">{{ name }}</el-link>
       </div>
     </el-header>
     <el-main>
       <div class="audit-left">
         <div class="audit-video">
           <div class="audit-line-1">
-            <div class="audit-line-text">视频剪辑总次数（次）</div>
+            <div class="audit-line-text">上传视频总数（次）</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
           <div class="audit-line-2">{{videoNum}}</div>
@@ -26,22 +26,22 @@
         </div>
         <div class="audit-text">
           <div class="audit-line-1">
-            <div class="audit-line-text">文本修改总次数</div>
+            <div class="audit-line-text">编辑视频总次数</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
           <div class="audit-line-2">{{textNum}}</div>
           <div class="audit-line-3">
-            <el-button @click="dialogTableVisible = true">点击查看统计图</el-button>
+            <el-button @click="viewData2()">点击查看统计图</el-button>
           </div>
         </div>
         <div class="audit-edit">
           <div class="audit-line-1">
-            <div class="audit-line-text">编辑总人数</div>
+            <div class="audit-line-text">文本编辑情况</div>
             <div class="audit-line-date">{{time}}</div>
           </div>
           <div class="audit-line-2">{{editPeo}}</div>
           <div class="audit-line-3">
-            <el-button @click="viewData2()">点击查看详情</el-button>
+            <el-button @click="dialogTableVisible = true">点击查看详情</el-button>
           </div>
         </div>
       </div>
@@ -68,11 +68,11 @@ import * as echarts from "echarts";
 export default {
   data() {
     return {
-      name: "思白",
+      name: "admin",
       time: "2021/2/9",//显示当前时间
-      textNum: '', //文本编辑总次数
-      editPeo: '', //编辑总人数
-      videoNum: '',//视频编辑总次数
+      textNum: '', //编辑视频总次数
+      editPeo: '', //文本编辑情况
+      videoNum: '',//上传视频总数（次）
 
       tewDayNum: [],//日编辑人数数据
       DayNumDay: [],

@@ -28,7 +28,6 @@
       <div>
         <el-button class="main-button2" @click="dialogVisible = true">开始使用</el-button>
       </div>
-
     </el-main>
 
     <el-dialog title="新建项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>

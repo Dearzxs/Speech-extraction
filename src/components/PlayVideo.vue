@@ -1,17 +1,33 @@
 <template>
-  <div class="play-container">
-    <div class="play-video">
-      <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
-    </div>
-    <div class="flash-text">
+  <div class="play-back">
+    <el-header height="70">
+      <div style="float:left;">
+        <h1 style="color: #FFFFFF;margin-left: 50px">文思海辉</h1>
+      </div>
+      <div style="float:right;">
+        <el-link :underline="false">关于我们</el-link>
+        <el-link :underline="false">教程</el-link>
+        <el-link :underline="false">模板库</el-link>
+        <el-link :underline="false">管理</el-link>
+        <el-button size="medium" round class="play-button1" style="background-color: transparent;margin-right: 70px">
+          登录
+        </el-button>
+      </div>
+    </el-header>
+    <el-main>
+      <div class="play-video">
+        <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
+      </div>
+    </el-main>
+    <el-footer>
       <div class="typewriter">
         <div class="typewriter-content">
           <p class="typewriter-dynamic">
-              <span class="cut"><span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span></span>
+            <span class="cut"><span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span></span>
           </p>
         </div>
       </div>
-    </div>
+    </el-footer>
   </div>
 </template>
 
@@ -66,7 +82,7 @@ export default {
     begin() {//开始输入的效果动画
       this.letters = this.str.split("")
       for (let i = 0; i < this.letters.length; i++) {
-        setTimeout(this.write(i), i * 1000);
+        setTimeout(this.write(i), i * 500);
       }
     },
     write(i) {//输入字母
@@ -119,13 +135,42 @@ export default {
 
 <style scoped lang="less">
 
+.play-back {
+  background-color: #000000;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-size: 100% 100%;
+}
+
+.el-header {
+  margin-top: 20px;
+}
+
+.el-link {
+  margin-top: 20px;
+  margin-right: 80px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.play-button1 {
+  width: 140px;
+  height: 45px;
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.el-main {
+  width: 75%;
+  height: 70%;
+}
+
 .play-video {
-  margin-top: 7%;
-  margin-left: 30px;
-  float: left;
-  width: 45%;
-  height: 90%;
-  //background-color: #af7979;
+  width: 55%;
+  margin-left: 180px;
+  border: 1px solid #8cc9ea;
   background-color: transparent;
   text-align: center;
   border-radius: 10px;
@@ -142,35 +187,16 @@ export default {
   display: block;
 }
 
-.flash-text {
-  margin-top: 300px;
-  float: right;
-  width: 45%;
-  height: 60px;
-  text-align: center;
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-}
-
-.textBox {
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
-  overflow: hidden;
-  position: relative;
-  text-align: center;
-}
-
 .typewriter {
+  //border: solid 1px #e0acac;
   box-sizing: border-box;
-  color: black;
+  color: #ffffff;
+  text-align: center;
 }
 
-.typewriter .typewriter-content {
+.typewriter-content {
   font-weight: bold;
   font-size: 30px;
-  display: flex;
   flex-direction: row;
   letter-spacing: 2px
 }
