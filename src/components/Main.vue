@@ -89,7 +89,9 @@ export default {
       this.uploadForm.append("userId", userId);
       this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
         if (res.status === 200) {
-          const jsonArr = res.data;
+          const jsonArr = res.data.textParaList;
+          const originalVideo = res.data.originalVideo;
+          console.log(originalVideo);
           sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
           this.$message({
             type: "success",

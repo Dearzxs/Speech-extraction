@@ -13,6 +13,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "core-js": "^2.6.12",
+    "crypto-js": "^4.0.0",
     "echarts": "^5.0.2",
     "element-ui": "^2.15.0",
     "less": "^4.1.1",
