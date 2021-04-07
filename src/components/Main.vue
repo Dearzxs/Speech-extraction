@@ -85,7 +85,8 @@ export default {
       for (let i = 0; i < this.fileList.length; i++) {
         this.uploadForm.append('uploadFile', this.fileList[i].raw);
       }
-      this.uploadForm.append("userId", 1);
+      const userId = sessionStorage.getItem('userId');
+      this.uploadForm.append("userId", userId);
       this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
         if (res.status === 200) {
           const jsonArr = res.data;

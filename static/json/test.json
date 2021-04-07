@@ -1,28 +1,27 @@
-{
-  "tableData": [
+[
     {
       "videoId": "1",
-      "beginTime": "11",
+      "beginTime": "1",
       "endTime": "22",
-      "text": "这是一段文字1"
+      "text": "1本例还使用status-icon属性为输入框添加了表示校验结果的反馈图标。"
     },
     {
-      "videoId": "2",
-      "beginTime": "12",
-      "endTime": "23",
-      "text": "这是一段文字2"
+      "videoId": "1",
+      "beginTime": "23",
+      "endTime": "33",
+      "text": "2自定义校验callback必须被调用。更多高级用法可参考async-validator。"
     },
     {
-      "videoId": "3",
-      "beginTime": "13",
-      "endTime": "24",
-      "text": "这是一段文字3"
+      "videoId": "1",
+      "beginTime": "34",
+      "endTime": "43",
+      "text": "3用于展示多条结构类似的数据，可对数据进行排序、筛选、对比或其他自定义操作。"
     },
     {
-      "videoId": "4",
-      "beginTime": "14",
-      "endTime": "25",
-      "text": "这是一段文字4"
+      "videoId": "1",
+      "beginTime": "44",
+      "endTime": "55",
+      "text": "4基础的表格展示用法。"
     }
-  ]
-}
+]
+

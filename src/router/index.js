@@ -4,10 +4,8 @@ import Login from "../components/Login";
 import Main from "../components/Main";
 import Audit from "../components/Audit";
 import Test from "../components/Test";
-import AuditSenior from "../components/AuditSenior";
 import PlayVideo from "../components/PlayVideo";
 import SolveVideo from "../components/SolveVideo";
-import typeWriter from "../components/typeWriter";
 
 Vue.use(Router)
 
@@ -40,19 +38,9 @@ export default new Router({
       component: Audit
     },
     {
-      path: '/auditSenior',
-      name: 'AuditSenior',
-      component: AuditSenior
-    },
-    {
       path: '/test',
       name: 'Test',
       component: Test
-    },
-    {
-      path: '/typeWriter',
-      name: 'TypeWriter',
-      component: typeWriter
     }
   ]
 })

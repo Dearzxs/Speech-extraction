@@ -6,10 +6,10 @@
         <el-input v-model="form.username"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password"></el-input>
+        <el-input type="password" v-model="form.password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
+        <el-button type="primary" @click="submitForm()">登录</el-button>
       </el-form-item>
     </el-form>
     <el-dialog title="温馨提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
@@ -22,9 +22,9 @@
 </template>
 
 <script>
+import Qs from 'qs'
 
 export default {
-  name: 'Login',
   data() {
     return {
       form: {
@@ -45,15 +45,15 @@ export default {
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$axios.post('/api/login',
-        {
-          username: this.form.username,
-          password: this.form.password,
-        }
-      ).then(res => {
-        if (res.data.message === 'SUCCESS') {
-          this.$router.push('/Main')
+    submitForm() {
+      let param = Qs.stringify({
+        "userId":this.form.username,
+        "userPwd":this.form.password
+      });
+      this.$axios.post('login/judge',param).then(res => {
+        if (res.data === 'success') {
+          sessionStorage.setItem('userId', this.form.username);
+          this.$router.push('/')
           alert('登陆成功')
         } else {
           alert('登录失败')

@@ -1,22 +1,17 @@
 <template>
   <div class="play-container">
     <div class="play-video">
-      <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false"
-                    :options="playerOptions"></video-player>
+      <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
     </div>
     <div class="flash-text">
       <div class="typewriter">
         <div class="typewriter-content">
           <p class="typewriter-dynamic">
-              <span class="cut">
-                <span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span>
-              </span>
-<!--            <span class="typewriter-cursor"></span>-->
+              <span class="cut"><span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span></span>
           </p>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -50,53 +45,31 @@ export default {
       },
 
       words: [],               //字母数组push，pop的载体
-      str: "嗯",          //str初始化
+      str: "嗯啊",          //str初始化
       letters: [],             //str分解后的字母数组
-      order: 1,                //表示当前是第几句话
+      order: 0,                //表示当前是第几句话
+
+      jsonData: [],
+      jsonLength: 0,
     };
   },
-  computed: {
-    text() {
-      return {
-        id: this.number,
-        val: this.textArr[this.number]
-      }
-    }
-  },
   mounted() {
-    this.begin()
+    this.begin();
+    this.testData();
   },
   watch: {                     //监听order值的变化，改变str的内容
     order() {
-      if (this.order % 4 === 1) {
-        this.str = "那集合有什么，集合干什么，"
-      } else if (this.order % 4 === 2) {
-        this.str = "把这三个问题搞清楚，"
-      } else if (this.order % 4 === 3) {
-        this.str = "我们就知道了结合式它的作用了。"
-      } else {
-        this.str = "~~~~~~~~~~~~~~~~~~~~"
-      }
-
+      this.str=this.jsonData[this.order].text;
     }
   },
   methods: {
-    //开始输入的效果动画
-    begin() {
+    begin() {//开始输入的效果动画
       this.letters = this.str.split("")
       for (let i = 0; i < this.letters.length; i++) {
-        setTimeout(this.write(i), i * 100);
+        setTimeout(this.write(i), i * 1000);
       }
     },
-    //开始删除的效果动画
-    back() {
-      let L = this.letters.length;
-      for (let i = 0; i < L; i++) {
-        setTimeout(this.wipe(i), 0);
-      }
-    },
-    //输入字母
-    write(i) {
+    write(i) {//输入字母
       return () => {
         let L = this.letters.length;
         this.words.push(this.letters[i]);
@@ -106,17 +79,40 @@ export default {
         }
       }
     },
-    //擦掉(删除)字母
-    wipe(i) {
+    back() {//开始删除的效果动画
+      let L = this.letters.length;
+      for (let i = 0; i < L; i++) {
+        setTimeout(this.wipe(i), 0);
+      }
+    },
+    wipe(i) {//擦掉(删除)字母
       return () => {
         this.words.pop(this.letters[i]);
         if (this.words.length === 0) {
-          this.order++;
+          if(this.order === this.jsonLength-1){
+            this.order=0;
+          }else
+          {
+            this.order++;
+          }
           let that = this;
           that.begin();
         }
       }
     },
+
+    testData(){
+      this.$axios.get('http://localhost:8081/static/json/test.json')
+        .then( res => {
+          this.jsonData = res.data;
+          this.jsonLength = this.jsonData.length;
+          console.log(this.jsonData)
+      }).catch((error) => {
+        console.log(error);
+      });
+
+    }
+
   }
 }
 </script>
