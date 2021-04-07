@@ -1,7 +1,7 @@
 <template>
   <el-container class="back">
     <el-header class="header">
-      <div style="float:left;color: #000000;margin-left: 50px;margin-top: 10px;font-size: 25px">
+      <div style="float:left;color: #FFFFFF;margin-left: 50px;margin-top: 10px;font-size: 25px">
         文思海辉
       </div>
       <div style="float:right;">
@@ -9,7 +9,7 @@
         <el-link :underline="false">教程</el-link>
         <el-link :underline="false">模板库</el-link>
         <el-link :underline="false">管理</el-link>
-        <el-link :underline="false">{{ name }}管理员,欢迎你</el-link>
+        <el-link :underline="false">{{ name }}老师,欢迎你</el-link>
       </div>
     </el-header>
     <el-main>
@@ -31,7 +31,7 @@
           </div>
           <div class="audit-line-2">{{textNum}}</div>
           <div class="audit-line-3">
-            <el-button @click="newAudit()">点击查看统计图</el-button>
+            <el-button @click="dialogTableVisible = true">点击查看统计图</el-button>
           </div>
         </div>
         <div class="audit-edit">
@@ -54,6 +54,11 @@
         </div>
       </div>
     </el-main>
+    <el-dialog title="文本修改总次数" width='45%' :visible.sync="dialogTableVisible" @open='myTextEdit()' @close='clearText()' :append-to-body="true">
+      <div class="audit-graph-3">
+        <div id="main3" style="width: 600px;height:400px;"></div>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -80,6 +85,10 @@ export default {
       isShowGraph1: true,
       isShowGraph2: true,
 
+      FiveMostText: [],
+      TextEditNum: [],
+      TextEditString: [],
+      dialogTableVisible: false,
 
     }
   },
@@ -95,7 +104,7 @@ export default {
           textStyle: {
             fontSize: 18,
             fontWeight: 'bolder',
-            color: 'black'          // 主标题文字颜色
+            color: 'white'          // 主标题文字颜色
           },
         },
         tooltip: {},
@@ -112,13 +121,13 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'black'
+              color: 'white'
             }
           },
           axisLine: {            // 坐标轴线
             show: true,        // 默认显示，属性show控制显示与否
             lineStyle: {       // 属性lineStyle控制线条样式
-              color: '#000080',
+              color: '#ffffff',
               width: 2,
               type: 'solid'
             }
@@ -132,7 +141,7 @@ export default {
             show: true,        // 默认显示，属性show控制显示与否
             // onGap: null,
             lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-              color: ['#000080'],
+              color: ['#ffffff'],
               width: 1,
               type: 'solid'
             },
@@ -147,13 +156,13 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'black'
+              color: 'white'
             }
           },
           axisLine: {            // 坐标轴线
             show: true,        // 默认显示，属性show控制显示与否
             lineStyle: {       // 属性lineStyle控制线条样式
-              color: '#000080',
+              color: '#ffffff',
               width: 2,
               type: 'solid'
             }
@@ -206,14 +215,14 @@ export default {
           textStyle: {
             fontSize: 18,
             fontWeight: 'bolder',
-            color: 'black'          // 主标题文字颜色
+            color: 'white'          // 主标题文字颜色
           },
         },
         tooltip: {},
         legend: {
           data: ['次数'],
           textStyle: {
-            color: 'black'          // 图例文字颜色
+            color: 'white'          // 图例文字颜色
           }
         },
         xAxis: {
@@ -232,7 +241,7 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'black'
+              color: 'white'
             }
           },
         },
@@ -257,7 +266,7 @@ export default {
             margin: 8,
             // formatter: null,
             textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
-              color: 'black'
+              color: 'white'
             }
           },
         },
@@ -297,6 +306,90 @@ export default {
 
       console.log("视频编辑数据加载完成");
     },
+    myTextEdit() {
+      // 基于准备好的dom，初始化echarts实例
+      const myChart3 = echarts.init(document.getElementById('main3'));
+
+      // 指定图表的配置项和数据
+      const option3 = {
+        title: {
+          text: '文本编辑次数',
+          subtext: '取前五项'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          },
+          formatter: function (params) {
+            return params[0].name;
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value',
+          boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+          axisLabel: {show: false,},
+          type: 'category',
+          data: []
+        },
+        series: [
+          {
+            name: '总编辑次数',
+            type: 'bar',
+            data: [],
+            barWidth: 30,
+            itemStyle: {
+              emphasis: {
+                barBorderRadius: 20
+              },
+              normal: {
+                barBorderRadius: 20
+              }
+            },
+          },
+        ]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart3.setOption(option3);
+
+      myChart3.showLoading();
+
+      this.$axios.get('http://localhost:8181/audit/page2').then((res) => {
+        this.FiveMostText = res.data.FiveMostText;
+        const sourceData = this.FiveMostText;
+        for (const item in sourceData) {
+          this.TextEditNum.push(sourceData[item].repeats);
+          this.TextEditString.push(sourceData[item].text);
+        }
+        setTimeout(() => {  //未来让加载动画效果明显,这里加入了setTimeout,实现2s延时
+          myChart3.hideLoading(); //没有加载出来隐藏加载动画
+          myChart3.setOption({  //动画的配置
+            yAxis: [{
+              data: this.TextEditString,  //这里数据是一个数组的形似
+            }],
+            series: {
+              data: this.TextEditNum,
+            }
+          })
+        }, 2000)
+      })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
+    clearText(){
+      this.TextEditNum=[];
+      this.TextEditString=[];
+    },
     getAllData(){
       this.$axios.get('http://localhost:8181/audit/page1')
         .then((res)=>{
@@ -327,9 +420,6 @@ export default {
           console.log(err);
         })
     },
-    newAudit(){
-      this.$router.push('/audit2')
-    },
     viewData1(){
       this.isShowGraph1=true;
     },
@@ -351,8 +441,8 @@ export default {
 <style scoped>
 
 .back {
-  /*background-image: linear-gradient(to bottom, #000209, #050092);*/
-  background-color: #f1f1f1;
+  background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  /*background-color: #262626;*/
   width: 100%;
   height: 100%;
   position: fixed;
@@ -364,18 +454,24 @@ export default {
   font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
+.el-button {
+  background-color: #6074b3;
+  color: #FFFFFF;
+}
+
 .el-link {
   margin-top: 20px;
   margin-right: 80px;
   margin-bottom: 20px;
   font-size: 17px;
-  color: #000000;
+  color: #FFFFFF;
 }
 
 .audit-left {
   float: left;
   width: 450px;
   height: 620px;
+  color: #FFFFFF;
 }
 
 .audit-right {
@@ -389,8 +485,10 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #ffffff;
+  border: solid 1px #ffffff;
+  /*background-color: #ffffff;*/
   border-radius: 10px;
+  /*filter: drop-shadow(10px 10px 10px rgba(203, 200, 200, 0.5));*/
 }
 
 .audit-line-1 {
@@ -425,7 +523,8 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #ffffff;
+  border: solid 1px #ffffff;
+  /*background-color: #ffffff;*/
   border-radius: 10px;
 }
 
@@ -434,15 +533,16 @@ export default {
   margin-left: 30px;
   width: 400px;
   height: 190px;
-  background-color: #ffffff;
+  border: solid 1px #ffffff;
+  /*background-color: #ffffff;*/
   border-radius: 10px;
 }
 
 .audit-graph-1 {
   width: 920px;
   height: 380px;
-  background-color: #ffffff;
-  border: 1px solid black;
+  /*background-color: #ffffff;*/
+  /*border: 1px solid #ffffff;*/
   border-radius: 10px;
 }
 
@@ -450,6 +550,15 @@ export default {
   margin-top: 30px;
   width: 920px;
   height: 250px;
+  /*background-color: #ffffff;*/
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+}
+
+.audit-graph-3 {
+  width: 620px;
+  height: 410px;
+  /*transform: translate(-50%,-50%);*/
   background-color: #ffffff;
   border: 1px solid black;
   border-radius: 10px;

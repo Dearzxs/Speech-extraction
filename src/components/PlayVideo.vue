@@ -1,15 +1,22 @@
 <template>
   <div class="play-container">
     <div class="play-video">
-      <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
+      <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false"
+                    :options="playerOptions"></video-player>
     </div>
     <div class="flash-text">
-      <div class="textBox">
-        <transition name="slide">
-          <p class="text" :key="text.id">{{text.val}}</p>
-        </transition>
+      <div class="typewriter">
+        <div class="typewriter-content">
+          <p class="typewriter-dynamic">
+              <span class="cut">
+                <span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span>
+              </span>
+<!--            <span class="typewriter-cursor"></span>-->
+          </p>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -42,42 +49,79 @@ export default {
         }
       },
 
-      textArr: [
-        '1 第一条公告',
-        '2 第二条公告第二条公告',
-        '3 第三条公告第三条公告第三条公告'
-      ],
-      number: 0
+      words: [],               //字母数组push，pop的载体
+      str: "嗯",          //str初始化
+      letters: [],             //str分解后的字母数组
+      order: 1,                //表示当前是第几句话
     };
   },
   computed: {
-    text () {
+    text() {
       return {
         id: this.number,
         val: this.textArr[this.number]
       }
     }
   },
-  mounted () {
-    this.startMove()
+  mounted() {
+    this.begin()
+  },
+  watch: {                     //监听order值的变化，改变str的内容
+    order() {
+      if (this.order % 4 === 1) {
+        this.str = "那集合有什么，集合干什么，"
+      } else if (this.order % 4 === 2) {
+        this.str = "把这三个问题搞清楚，"
+      } else if (this.order % 4 === 3) {
+        this.str = "我们就知道了结合式它的作用了。"
+      } else {
+        this.str = "~~~~~~~~~~~~~~~~~~~~"
+      }
+
+    }
   },
   methods: {
-    startMove () {
-      // eslint-disable-next-line
-      let timer = setTimeout(() => {
-        if (this.number === 2) {
-          this.number = 0;
-        } else {
-          this.number += 1;
+    //开始输入的效果动画
+    begin() {
+      this.letters = this.str.split("")
+      for (let i = 0; i < this.letters.length; i++) {
+        setTimeout(this.write(i), i * 100);
+      }
+    },
+    //开始删除的效果动画
+    back() {
+      let L = this.letters.length;
+      for (let i = 0; i < L; i++) {
+        setTimeout(this.wipe(i), 0);
+      }
+    },
+    //输入字母
+    write(i) {
+      return () => {
+        let L = this.letters.length;
+        this.words.push(this.letters[i]);
+        let that = this;
+        if (i === L - 1) {
+          that.back();
         }
-        this.startMove();
-      }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
-    }
+      }
+    },
+    //擦掉(删除)字母
+    wipe(i) {
+      return () => {
+        this.words.pop(this.letters[i]);
+        if (this.words.length === 0) {
+          this.order++;
+          let that = this;
+          that.begin();
+        }
+      }
+    },
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 .play-video {
   margin-top: 7%;
@@ -85,7 +129,8 @@ export default {
   float: left;
   width: 45%;
   height: 90%;
-  background-color: #af7979;
+  //background-color: #af7979;
+  background-color: transparent;
   text-align: center;
   border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -121,25 +166,27 @@ export default {
   text-align: center;
 }
 
-.text {
-  font-size: 20px;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
+.typewriter {
+  box-sizing: border-box;
+  color: black;
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: all 0.5s linear;
+.typewriter .typewriter-content {
+  font-weight: bold;
+  font-size: 30px;
+  display: flex;
+  flex-direction: row;
+  letter-spacing: 2px
 }
 
-.slide-enter{
-  transform: translateY(20px) scale(1);
-  opacity: 1;
-}
-
-.slide-leave-to {
-  transform: translateY(-20px) scale(0.8);
-  opacity: 0;
-}
-
+//光标
+//.typewriter-cursor {
+//  position: absolute;
+//  height: 100%;
+//  width: 3px;
+//  top: 0;
+//  right: -10px;
+//  background-color: #000000;
+//  animation: flash 1.5s linear infinite;
+//}
 </style>

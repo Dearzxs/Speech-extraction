@@ -181,7 +181,7 @@ export default {
 <style lang="less">
 
 .back {
-  background-color: #000000;
+  background-color: #262626;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -242,7 +242,8 @@ export default {
   float: left;
   width: 45%;
   height: 90%;
-  //background-color: #ffffff;
+  border: solid 1px #faf5f5;
+  background-color: #000000;
   text-align: center;
   border-radius: 10px;
   -webkit-border-radius: 10px;

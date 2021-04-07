@@ -1,17 +1,5 @@
 <template>
   <el-container class="back">
-    <el-header>
-      <div class="el-icon-coin"></div>
-      <div class="project-name">
-        {{ projectName }}
-      </div>
-      <div class="project-icon">
-        <i class="el-icon-edit-outline"></i>
-      </div>
-      <div class="nav">
-        <el-button size="medium" round class="project-button1" @click="login()">登录</el-button>
-      </div>
-    </el-header>
     <el-main>
       <div class="project-main1">
         <div class="playVideo">

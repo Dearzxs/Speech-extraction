@@ -1,7 +1,7 @@
 <template>
   <el-container class="back">
     <el-header class="header">
-      <div style="float:left;color: #000000;margin-left: 50px;margin-top: 10px;font-size: 25px">
+      <div style="float:left;color: #ffffff;margin-left: 50px;margin-top: 10px;font-size: 25px">
         文思海辉
       </div>
       <div style="float:right;">
@@ -123,7 +123,8 @@ export default {
 
 .back {
   /*background-image: linear-gradient(to bottom, #000209, #050092);*/
-  background-color: #ffffff;
+  background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  /*background-color: #ffffff;*/
   width: 100%;
   height: 100%;
   position: fixed;
@@ -133,6 +134,7 @@ export default {
 .header {
   height: 40px;
   font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  color: #FFFFFF;
 }
 
 .el-link {
