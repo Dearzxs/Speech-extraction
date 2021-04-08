@@ -47,6 +47,12 @@
         <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过200Mb</div>
       </el-upload>
     </el-dialog>
+    <el-dialog title="上传进度" :visible.sync="uploadVisible" width="40%" :modal-append-to-body='false'>
+      <span>{{ processInfo }}</span>
+      <div>
+        <k-progress :percent="percent" :color="getColor" active></k-progress>
+      </div>
+    </el-dialog>
   </el-container>
 
 </template>
@@ -56,11 +62,38 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      uploadVisible: false,
       loading: false,
       fileList: [],
       uploadForm:null,
-      tips: ''
+      tips: '',
+
+      processInfo: "正在进行视频语音提取",
+      percent: 0,
+      ifUp: true,
     };
+  },
+  mounted() {
+    const timer = setInterval(() =>{
+      if (this.ifUp) {
+        this.percent = this.percent + 1
+        if(this.percent === 5) this.processInfo="视频分片成功"
+        if(this.percent === 10) this.processInfo="正在分片处理"
+        if(this.percent === 30) this.processInfo="第一片处理完成"
+        if(this.percent === 50) this.processInfo="第二片处理完成"
+        if(this.percent === 70) this.processInfo="第三片处理完成"
+        if(this.percent === 90) this.processInfo="正在存储文本"
+        if(this.percent === 100){
+          this.processInfo = "文本存储完成"
+          this.ifUp = false
+        }
+      } else {
+        this.percent = 0
+        this.processInfo = "正在进行视频语音提取"
+        this.ifUp = true
+      }
+    }, 500);
+    this.$once('hook:beforeDestroy', () => clearInterval(timer));
   },
   methods: {
     changFile(file, fileList) {
@@ -74,48 +107,64 @@ export default {
     },
 
     solveData() {
-      const loading = this.$loading({
-        lock: true,
-        text: '视频处理中，请稍后',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-      this.uploadForm = new FormData();
-      for (let i = 0; i < this.fileList.length; i++) {
-        this.uploadForm.append('uploadFile', this.fileList[i].raw);
-      }
-      const userId = sessionStorage.getItem('userId');
+      this.dialogVisible=false;
+      // const loading = this.$loading({
+      //   lock: true,
+      //   text: '视频处理中，请稍后',
+      //   spinner: 'el-icon-loading',
+      //   background: 'rgba(0, 0, 0, 0.7)'
+      // });
+      this.uploadVisible=true;
+      // this.uploadForm = new FormData();
+      // for (let i = 0; i < this.fileList.length; i++) {
+      //   this.uploadForm.append('uploadFile', this.fileList[i].raw);
+      // }
+      // const userId = sessionStorage.getItem('userId');
       // this.uploadForm.append("userId", userId);
-      this.uploadForm.append("userId", "admin");
-      this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
-        if (res.status === 200) {
-          const jsonArr = res.data.textParaList;
-          const originalVideo = res.data.originalVideo;
-          console.log(originalVideo);
-          sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
-          this.$message({
-            type: "success",
-            message: "上传成功"
-          });
-          loading.close();
-          this.$router.push('/solveVideo');
-        }
-        else{
-          loading.close();
-          this.$message({
-            type: "error",
-            message: "解析失败，请重新上传"
-          });
-        }
-      }).catch(err => {
-        console.log(err);
-        loading.close();
-        this.$message({
-          type: "error",
-          message: "发送请求失败，请检查网络连接"
-        });
-      });
+      // this.uploadForm.append("userId", "admin");
+      // this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
+      //   if (res.status === 200) {
+      //     const jsonArr = res.data.textParaList;
+      //     const originalVideo = res.data.originalVideo;
+      //     console.log(originalVideo);
+      //     sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传成功"
+      //     });
+      //     // loading.close();
+      //     this.uploadVisible=false;
+      //     this.$router.push('/solveVideo');
+      //   }
+      //   else{
+      //     // loading.close();
+      //     this.uploadVisible=false;
+      //     this.$message({
+      //       type: "error",
+      //       message: "解析失败，请重新上传"
+      //     });
+      //   }
+      // }).catch(err => {
+      //   console.log(err);
+      //   loading.close();
+      //   this.$message({
+      //     type: "error",
+      //     message: "发送请求失败，请检查网络连接"
+      //   });
+      // });
     },
+
+    getColor(percent) {
+      if(percent < 40){
+        return '#9CECFB';
+      } else if(percent < 60) {
+        return '#65C7F7';
+      } else if(percent < 80) {
+        return '#007991';
+      } else {
+        return '#78ffd6';
+      }
+    }
   }
 }
 </script>

@@ -3,7 +3,7 @@
     <el-main>
       <div class="project-main1">
         <div class="playVideo">
-          <video src="../assets/video/java.mp4" id="myVideo"></video>
+<!--          <video src="./static/video/java.mp4" id="myVideo"></video>-->
         </div>
       </div>
       <div class="project-main2">

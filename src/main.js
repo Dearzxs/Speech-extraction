@@ -11,6 +11,7 @@ import './assets/css/iconfont.css';
 import VideoPlayer from 'vue-video-player'
 import 'vue-video-player/src/custom-theme.css'
 import 'video.js/dist/video-js.css'
+import KProgress from 'k-progress';
 
 Vue.prototype.Event = new Vue
 
@@ -20,7 +21,8 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
-Vue.use(VideoPlayer)
+Vue.use(VideoPlayer);
+Vue.component('k-progress', KProgress);
 
 /* eslint-disable no-new */
 new Vue({
