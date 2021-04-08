@@ -16,7 +16,14 @@
     </el-header>
     <el-main>
       <div class="play-video">
-        <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsline="false" :options="playerOptions"></video-player>
+        <video-player class="video-player vjs-custom-skin"
+                      ref="videoPlayer"
+                      :playsline="true"
+                      :options="playerOptions"
+                      @play="onPlayerPlay($event)"
+                      @pause="onPlayerPause($event)"
+        >
+        </video-player>
       </div>
     </el-main>
     <el-footer>
@@ -27,7 +34,16 @@
           </p>
         </div>
       </div>
+      <el-button class="play-button2" type="primary" round @click="dialogVisible = true">完成</el-button>
     </el-footer>
+
+    <el-dialog title="我的项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
+      <span>还有视频文件未处理，是否处理下一文件</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -37,98 +53,133 @@ export default {
     return {
       playVideoUrl: '',
       playerOptions: {
-        playbackRates: [0.7, 1.0, 1.5, 2.0], // 播放速度
-        autoplay: false, // 如果true,浏览器准备好时开始回放。
-        muted: false, // 默认情况下将会消除任何音频。
-        loop: false, // 导致视频一结束就重新开始。
-        preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        playbackRates: [1.0], // 播放速度
+        autoplay: false, // 是否自动播放
+        muted: false, // 是否静音
+        loop: false, // 是否开启循环播放
+        preload: 'auto', // 自动预加载
         language: 'zh-CN',
         aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
         fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
         sources: [{
-          type: 'video/mp4', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
-          src: './static/video/java.mp4' // url地址
+          type: 'video/webm', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
+          src: './static/video/jdwy.webm' // url地址
         }],
         poster: '', // 你的封面地址
         width: document.documentElement.clientWidth, // 播放器宽度
         notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         controlBar: {
-          timeDivider: true,
-          durationDisplay: true,
-          remainingTimeDisplay: false,
+          timeDivider: true,  //是否显示当前时间和持续时间的分隔符，"/"
+          durationDisplay: true,  // 是否显示持续时间
+          remainingTimeDisplay: false,  // 是否显示剩余时间
           fullscreenToggle: true // 全屏按钮
         }
       },
 
-      words: [],               //字母数组push，pop的载体
-      str: "嗯啊",          //str初始化
-      letters: [],             //str分解后的字母数组
-      order: 0,                //表示当前是第几句话
+      dialogVisible: false,
 
-      jsonData: [],
-      jsonLength: 0,
+      words: [],               //字母数组push，pop的载体
+      str: "嗯",          //str初始化
+      letters: [],             //str分解后的字母数组
+      order: -1,                //表示当前是第几句话
+      stopFlag: 0,
+      lastPlace: -1, //-1表示正常输入， 非-1表示输出上一次结果
+      durations: 0,
+      firstFlag: true,
+
+      jsonData: [],   //字幕json数组
+      jsonLength: 0,  //总句子数
     };
   },
+  computed: {
+    player() {
+      return this.$refs.videoPlayer.player
+    }
+  },
   mounted() {
-    this.begin();
     this.testData();
   },
   watch: {                     //监听order值的变化，改变str的内容
     order() {
-      this.str=this.jsonData[this.order].text;
-    }
+      this.str = this.jsonData[this.order].text;
+    },
   },
   methods: {
-    begin() {//开始输入的效果动画
-      this.letters = this.str.split("")
-      for (let i = 0; i < this.letters.length; i++) {
-        setTimeout(this.write(i), i * 500);
-      }
-    },
-    write(i) {//输入字母
-      return () => {
-        let L = this.letters.length;
-        this.words.push(this.letters[i]);
-        let that = this;
-        if (i === L - 1) {
-          that.back();
+    // 开始输入
+    beginText(lastPlace) {
+      if (lastPlace === -1) {
+        this.letters = this.str.split("")
+        for (let i = 0; i < this.letters.length; i++) {
+          setTimeout(this.write(i), i * 500);
         }
       }
-    },
-    back() {//开始删除的效果动画
-      let L = this.letters.length;
-      for (let i = 0; i < L; i++) {
-        setTimeout(this.wipe(i), 0);
+      if (lastPlace !== -1) {
+        this.letters = this.str.split("")
+        for (let i = lastPlace + 1; i < this.letters.length; i++) {
+          setTimeout(this.write(i), i * 500);
+        }
+        this.lastPlace = -1;
       }
     },
-    wipe(i) {//擦掉(删除)字母
+    // 输入字母
+    write(i) {
       return () => {
-        this.words.pop(this.letters[i]);
-        if (this.words.length === 0) {
-          if(this.order === this.jsonLength-1){
-            this.order=0;
-          }else
-          {
-            this.order++;
+        if (this.stopFlag === 0) {
+          let L = this.letters.length;
+          this.words.push(this.letters[i]);
+          if (i === L - 1) {
+            this.words.splice(0, L)
+            if (this.order === this.jsonLength - 1) {
+              this.order = 0;
+            } else {
+              this.order++;
+            }
+            let that = this;
+            that.beginText(-1);
           }
-          let that = this;
-          that.begin();
+        }
+        if (this.stopFlag === 1) {
+          this.lastPlace = i;
         }
       }
     },
 
-    testData(){
+    // 获取数据
+    testData() {
       this.$axios.get('http://localhost:8081/static/json/test.json')
-        .then( res => {
+        .then(res => {
           this.jsonData = res.data;
           this.jsonLength = this.jsonData.length;
-          console.log(this.jsonData)
-      }).catch((error) => {
+          console.log("sentences:" + this.jsonLength);
+        }).catch((error) => {
         console.log(error);
       });
 
-    }
+    },
 
+    // 播放回调
+    onPlayerPlay(player) {
+      if (this.firstFlag === true) {
+        this.firstFlag = false;
+        console.log('player first play!')
+      } else {
+        this.stopFlag = 0;
+        this.beginText(this.lastPlace);
+        console.log('player play!')
+      }
+
+    },
+    // 暂停回调
+    onPlayerPause(player) {
+      this.stopFlag = 1;
+      // console.log('player pause!', player)
+      console.log('player pause!')
+    },
+
+    // onPlayerTimeupdate(player) {
+    //   this.durations = player.cache_.currentTime
+    //   const dura = parseInt(this.durations);
+    // }
   }
 }
 </script>
@@ -160,6 +211,12 @@ export default {
   height: 45px;
   font-size: 18px;
   color: #FFFFFF;
+}
+
+.play-button2 {
+  float: right;
+  margin-right: 40px;
+  margin-bottom: 40px;
 }
 
 .el-main {

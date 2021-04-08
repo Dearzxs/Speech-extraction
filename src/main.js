@@ -11,6 +11,7 @@ import './assets/css/iconfont.css';
 import VideoPlayer from 'vue-video-player'
 import 'vue-video-player/src/custom-theme.css'
 import 'video.js/dist/video-js.css'
+
 import KProgress from 'k-progress';
 
 Vue.prototype.Event = new Vue

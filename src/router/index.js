@@ -6,7 +6,6 @@ import Audit from "../components/Audit";
 import Test from "../components/Test";
 import PlayVideo from "../components/PlayVideo";
 import SolveVideo from "../components/SolveVideo";
-import abc from "../components/abc";
 
 Vue.use(Router)
 
@@ -42,11 +41,6 @@ export default new Router({
       path: '/test',
       name: 'Test',
       component: Test
-    },
-    {
-      path: '/abc',
-      name: 'abc',
-      component: abc
     }
   ]
 })

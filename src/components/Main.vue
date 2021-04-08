@@ -9,7 +9,6 @@
         <el-link :underline="false">教程</el-link>
         <el-link :underline="false">模板库</el-link>
         <el-link :underline="false">管理</el-link>
-        <el-button size="medium" round class="main-button1" style="background-color: #d7b542">注册</el-button>
         <el-button size="medium" round class="main-button1" style="background-color: transparent;margin-right: 70px">
           登录
         </el-button>
@@ -87,11 +86,12 @@ export default {
           this.processInfo = "文本存储完成"
           this.ifUp = false
         }
-      } else {
-        this.percent = 0
-        this.processInfo = "正在进行视频语音提取"
-        this.ifUp = true
       }
+      // else {
+      //   this.percent = 0
+      //   this.processInfo = "正在进行视频语音提取"
+      //   this.ifUp = true
+      // }
     }, 500);
     this.$once('hook:beforeDestroy', () => clearInterval(timer));
   },
@@ -108,50 +108,41 @@ export default {
 
     solveData() {
       this.dialogVisible=false;
-      // const loading = this.$loading({
-      //   lock: true,
-      //   text: '视频处理中，请稍后',
-      //   spinner: 'el-icon-loading',
-      //   background: 'rgba(0, 0, 0, 0.7)'
-      // });
       this.uploadVisible=true;
-      // this.uploadForm = new FormData();
-      // for (let i = 0; i < this.fileList.length; i++) {
-      //   this.uploadForm.append('uploadFile', this.fileList[i].raw);
-      // }
-      // const userId = sessionStorage.getItem('userId');
+      this.uploadForm = new FormData();
+      for (let i = 0; i < this.fileList.length; i++) {
+        this.uploadForm.append('uploadFile', this.fileList[i].raw);
+      }
+      const userId = sessionStorage.getItem('userId');
       // this.uploadForm.append("userId", userId);
-      // this.uploadForm.append("userId", "admin");
-      // this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
-      //   if (res.status === 200) {
-      //     const jsonArr = res.data.textParaList;
-      //     const originalVideo = res.data.originalVideo;
-      //     console.log(originalVideo);
-      //     sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
-      //     this.$message({
-      //       type: "success",
-      //       message: "上传成功"
-      //     });
-      //     // loading.close();
-      //     this.uploadVisible=false;
-      //     this.$router.push('/solveVideo');
-      //   }
-      //   else{
-      //     // loading.close();
-      //     this.uploadVisible=false;
-      //     this.$message({
-      //       type: "error",
-      //       message: "解析失败，请重新上传"
-      //     });
-      //   }
-      // }).catch(err => {
-      //   console.log(err);
-      //   loading.close();
-      //   this.$message({
-      //     type: "error",
-      //     message: "发送请求失败，请检查网络连接"
-      //   });
-      // });
+      this.uploadForm.append("userId", "admin");
+      this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
+        if (res.status === 200) {
+          const jsonArr = res.data.textParaList;
+          const originalVideo = res.data.originalVideo;
+          sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
+          this.$message({
+            type: "success",
+            message: "上传成功"
+          });
+          this.uploadVisible=false;
+          this.$router.push('/solveVideo');
+        }
+        else{
+          this.uploadVisible=false;
+          this.$message({
+            type: "error",
+            message: "解析失败，请重新上传"
+          });
+        }
+      }).catch(err => {
+        console.log(err);
+        this.uploadVisible=false;
+        this.$message({
+          type: "error",
+          message: "发送请求失败，请检查网络连接"
+        });
+      });
     },
 
     getColor(percent) {

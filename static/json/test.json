@@ -1,27 +1,27 @@
 [
     {
       "videoId": "1",
-      "beginTime": "1",
-      "endTime": "22",
-      "text": "1本例还使用status-icon属性为输入框添加了表示校验结果的反馈图标。"
+      "beginTime": 7,
+      "endTime": 9,
+      "text": "秀儿先生"
     },
     {
       "videoId": "1",
-      "beginTime": "23",
-      "endTime": "33",
-      "text": "2自定义校验callback必须被调用。更多高级用法可参考async-validator。"
+      "beginTime": 9,
+      "endTime": 10,
+      "text": "大言不惭,"
     },
     {
       "videoId": "1",
-      "beginTime": "34",
-      "endTime": "43",
-      "text": "3用于展示多条结构类似的数据，可对数据进行排序、筛选、对比或其他自定义操作。"
+      "beginTime": 11,
+      "endTime": 13,
+      "text": "借推崇新文化,"
     },
     {
       "videoId": "1",
-      "beginTime": "44",
-      "endTime": "55",
-      "text": "4基础的表格展示用法。"
+      "beginTime": 13,
+      "endTime": 15,
+      "text": "埋葬旧文化之名"
     }
 ]
 
