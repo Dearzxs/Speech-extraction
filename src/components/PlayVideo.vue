@@ -33,7 +33,7 @@
           </p>
         </div>
       </div>
-      <el-button class="play-button2" type="primary" round @click="dialogVisible = true">完成</el-button>
+      <el-button class="play-button2" size="medium" style="background-color: transparent" round @click="dialogVisible = true">完成</el-button>
     </el-footer>
 
     <el-dialog title="我的项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
@@ -214,6 +214,9 @@ export default {
 
 .play-button2 {
   float: right;
+  width: 100px;
+  height: 40px;
+  color: white;
   margin-right: 40px;
   margin-bottom: 40px;
 }
