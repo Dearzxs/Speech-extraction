@@ -7,10 +7,9 @@
       <div style="float:right;">
         <el-link :underline="false">关于我们</el-link>
         <el-link :underline="false">教程</el-link>
-        <el-link :underline="false">模板库</el-link>
-        <el-link :underline="false">管理</el-link>
+        <el-link href="http://localhost:8081/auditCount" :underline="false">审计</el-link>
         <el-button size="medium" round class="play-button1" style="background-color: transparent;margin-right: 70px">
-          登录
+          admin
         </el-button>
       </div>
     </el-header>
@@ -164,7 +163,7 @@ export default {
         console.log('player first play!')
       } else {
         this.stopFlag = 0;
-        this.beginText(this.lastPlace);
+        // this.beginText(this.lastPlace);
         console.log('player play!')
       }
 

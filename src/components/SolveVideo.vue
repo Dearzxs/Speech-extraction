@@ -9,7 +9,7 @@
         <i class="el-icon-edit-outline"></i>
       </div>
       <div class="nav">
-        <el-button size="medium" round class="project-button1" @click="login()">登录</el-button>
+        <el-button size="medium" round class="project-button1" @click="login()">admin</el-button>
       </div>
     </el-header>
     <el-main>

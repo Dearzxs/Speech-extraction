@@ -7,10 +7,9 @@
       <div style="float:right;">
         <el-link :underline="false">关于我们</el-link>
         <el-link :underline="false">教程</el-link>
-        <el-link :underline="false">模板库</el-link>
-        <el-link :underline="false">管理</el-link>
+        <el-link href="http://localhost:8081/auditCount" :underline="false">审计</el-link>
         <el-button size="medium" round class="main-button1" style="background-color: transparent;margin-right: 70px">
-          登录
+          admin
         </el-button>
       </div>
     </el-header>
@@ -43,7 +42,7 @@
         >
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
         <el-button style="margin-left: 10px;" size="small" @click="solveData()">上传文件</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过200Mb</div>
+        <div slot="tip" class="el-upload__tip">只能上传视频文件，且不超过30min</div>
       </el-upload>
     </el-dialog>
     <el-dialog title="上传进度" :visible.sync="uploadVisible" width="40%" :modal-append-to-body='false'>
