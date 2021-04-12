@@ -52,6 +52,12 @@
     <el-footer>
       <el-button  @click="submitForm" round icon="el-icon-upload" class="project-button2">提交</el-button>
     </el-footer>
+    <el-dialog title="上传进度" :visible.sync="uploadVisible" width="40%" :modal-append-to-body='false'>
+      <span>{{ processInfo }}</span>
+      <div>
+        <k-progress :percent="percent" :color="getColor" active></k-progress>
+      </div>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -68,6 +74,11 @@ export default {
       showBtn: [],  //显示编辑按钮
       VideoAddress: '',
       videoId: '1',
+
+      uploadVisible: false,
+      processInfo: "文本上传成功",
+      percent: 0,
+      ifUp: true,
 
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], // 播放速度
@@ -96,6 +107,25 @@ export default {
   },
   mounted() {
     this.getData();
+    const timer = setInterval(() =>{
+      if (this.ifUp) {
+        this.percent = this.percent + 1
+        if(this.percent === 5) this.processInfo="文本修改已记录"
+        if(this.percent === 10) this.processInfo="正在语音合成"
+        if(this.percent === 30) this.processInfo="正在进行音视频转换"
+        if(this.percent === 95) this.processInfo="正在存储视频"
+        if(this.percent === 100){
+          this.processInfo = "视频存储完成"
+          this.ifUp = false
+        }
+      }
+      // else {
+      //   this.percent = 0
+      //   this.processInfo = "正在进行视频语音提取"
+      //   this.ifUp = true
+      // }
+    }, 500);
+    this.$once('hook:beforeDestroy', () => clearInterval(timer));
   },
   methods: {
     login() {
@@ -108,14 +138,8 @@ export default {
       this.rawData = JSON.parse(JSON.stringify(this.tableData));//深拷贝
     },
     submitForm(){
-      const loading = this.$loading({
-        lock: true,
-        text: '视频处理中，请稍后',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
+      this.uploadVisible=true;
       this.diffFormData();
-      console.log(this.editData);
       this.$axios.post('/syn/speech',this.editData).then((res) => {
         if (res.status === 200) {
           this.VideoAddress=res.data;
@@ -123,7 +147,7 @@ export default {
             message: '视频处理完成',
             type: 'success'
           });
-          loading.close();
+          this.uploadVisible=false;
           this.$router.push({
             path: '/playVideo',
             query: {
@@ -132,7 +156,7 @@ export default {
           })
         }
         else {
-          loading.close();
+          this.uploadVisible=false;
           this.$message({
             type: "error",
             message: "视频处理失败"
@@ -140,7 +164,7 @@ export default {
         }
       }).catch(err => {
         console.log(err);
-        loading.close();
+        this.uploadVisible=false;
         this.$message({
           type: "error",
           message: "视频处理失败"
@@ -175,6 +199,18 @@ export default {
         }
       }
     },
+
+    getColor(percent) {
+      if(percent < 40){
+        return '#9CECFB';
+      } else if(percent < 60) {
+        return '#65C7F7';
+      } else if(percent < 80) {
+        return '#007991';
+      } else {
+        return '#78ffd6';
+      }
+    }
   },
 }
 </script>

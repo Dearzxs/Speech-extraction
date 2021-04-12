@@ -37,10 +37,10 @@
     </el-footer>
 
     <el-dialog title="我的项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
-      <span>还有视频文件未处理，是否处理下一文件</span>
+      <span>{{ videoInfo }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="newVideo();dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -88,6 +88,8 @@ export default {
 
       jsonData: [],   //字幕json数组
       jsonLength: 0,  //总句子数
+
+      videoInfo: '还有视频文件未处理，是否处理下一文件'
     };
   },
   computed: {
@@ -175,10 +177,16 @@ export default {
       console.log('player pause!')
     },
 
-    // onPlayerTimeupdate(player) {
+    //   onPlayerTimeupdate(player) {
     //   this.durations = player.cache_.currentTime
     //   const dura = parseInt(this.durations);
     // }
+    newVideo(){
+      this.$message({
+        type: "success",
+        message: "视频已处理好，可修改"
+      });
+    }
   }
 }
 </script>

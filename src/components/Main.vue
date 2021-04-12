@@ -60,12 +60,11 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      uploadVisible: false,
-      loading: false,
       fileList: [],
       uploadForm:null,
       tips: '',
 
+      uploadVisible: false,
       processInfo: "正在进行视频语音提取",
       percent: 0,
       ifUp: true,
