@@ -71,27 +71,7 @@ export default {
     };
   },
   mounted() {
-    const timer = setInterval(() =>{
-      if (this.ifUp) {
-        this.percent = this.percent + 1
-        if(this.percent === 5) this.processInfo="视频分片成功"
-        if(this.percent === 10) this.processInfo="正在分片处理"
-        if(this.percent === 30) this.processInfo="第一片处理完成"
-        if(this.percent === 50) this.processInfo="第二片处理完成"
-        if(this.percent === 70) this.processInfo="第三片处理完成"
-        if(this.percent === 90) this.processInfo="正在存储文本"
-        if(this.percent === 100){
-          this.processInfo = "文本存储完成"
-          this.ifUp = false
-        }
-      }
-      // else {
-      //   this.percent = 0
-      //   this.processInfo = "正在进行视频语音提取"
-      //   this.ifUp = true
-      // }
-    }, 500);
-    this.$once('hook:beforeDestroy', () => clearInterval(timer));
+
   },
   methods: {
     changFile(file, fileList) {
@@ -106,6 +86,7 @@ export default {
 
     solveData() {
       this.dialogVisible=false;
+      this.startTime();
       this.uploadVisible=true;
       this.uploadForm = new FormData();
       for (let i = 0; i < this.fileList.length; i++) {
@@ -141,6 +122,30 @@ export default {
           message: "发送请求失败，请检查网络连接"
         });
       });
+    },
+
+    startTime(){
+      const timer = setInterval(() =>{
+        if (this.ifUp) {
+          this.percent = this.percent + 1
+          if(this.percent === 5) this.processInfo="视频分片成功"
+          if(this.percent === 10) this.processInfo="正在分片处理"
+          if(this.percent === 30) this.processInfo="第一片处理完成"
+          if(this.percent === 50) this.processInfo="第二片处理完成"
+          if(this.percent === 70) this.processInfo="第三片处理完成"
+          if(this.percent === 90) this.processInfo="正在存储文本"
+          if(this.percent === 100){
+            this.processInfo = "文本存储完成"
+            this.ifUp = false
+          }
+        }
+        // else {
+        //   this.percent = 0
+        //   this.processInfo = "正在进行视频语音提取"
+        //   this.ifUp = true
+        // }
+      }, 500);
+      this.$once('hook:beforeDestroy', () => clearInterval(timer));
     },
 
     getColor(percent) {

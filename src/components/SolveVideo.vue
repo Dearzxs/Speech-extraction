@@ -107,25 +107,6 @@ export default {
   },
   mounted() {
     this.getData();
-    const timer = setInterval(() =>{
-      if (this.ifUp) {
-        this.percent = this.percent + 1
-        if(this.percent === 5) this.processInfo="文本修改已记录"
-        if(this.percent === 10) this.processInfo="正在语音合成"
-        if(this.percent === 30) this.processInfo="正在进行音视频转换"
-        if(this.percent === 95) this.processInfo="正在存储视频"
-        if(this.percent === 100){
-          this.processInfo = "视频存储完成"
-          this.ifUp = false
-        }
-      }
-      // else {
-      //   this.percent = 0
-      //   this.processInfo = "正在进行视频语音提取"
-      //   this.ifUp = true
-      // }
-    }, 500);
-    this.$once('hook:beforeDestroy', () => clearInterval(timer));
   },
   methods: {
     login() {
@@ -138,6 +119,7 @@ export default {
       this.rawData = JSON.parse(JSON.stringify(this.tableData));//深拷贝
     },
     submitForm(){
+      this.startTime();
       this.uploadVisible=true;
       this.diffFormData();
       this.$axios.post('/syn/speech',this.editData).then((res) => {
@@ -198,6 +180,28 @@ export default {
           }
         }
       }
+    },
+
+    startTime(){
+      const timer = setInterval(() =>{
+        if (this.ifUp) {
+          this.percent = this.percent + 1
+          if(this.percent === 5) this.processInfo="文本修改已记录"
+          if(this.percent === 10) this.processInfo="正在语音合成"
+          if(this.percent === 30) this.processInfo="正在进行音视频转换"
+          if(this.percent === 95) this.processInfo="正在存储视频"
+          if(this.percent === 100){
+            this.processInfo = "视频存储完成"
+            this.ifUp = false
+          }
+        }
+        // else {
+        //   this.percent = 0
+        //   this.processInfo = "正在进行视频语音提取"
+        //   this.ifUp = true
+        // }
+      }, 500);
+      this.$once('hook:beforeDestroy', () => clearInterval(timer));
     },
 
     getColor(percent) {
