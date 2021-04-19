@@ -87,7 +87,7 @@ export default {
     solveData() {
       this.dialogVisible=false;
       this.startTime();
-      this.uploadVisible=true;
+      // this.uploadVisible=true;
       this.uploadForm = new FormData();
       for (let i = 0; i < this.fileList.length; i++) {
         this.uploadForm.append('uploadFile', this.fileList[i].raw);
@@ -104,7 +104,7 @@ export default {
             type: "success",
             message: "上传成功"
           });
-          this.uploadVisible=false;
+          // this.uploadVisible=false;
           this.$router.push('/solveVideo');
         }
         else{

@@ -165,7 +165,7 @@ export default {
         console.log('player first play!')
       } else {
         this.stopFlag = 0;
-        // this.beginText(this.lastPlace);
+        this.beginText(this.lastPlace);
         console.log('player play!')
       }
 

@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Login from "../components/Login";
 import Main from "../components/Main";
 import Audit from "../components/Audit";
-import Test from "../components/Test";
 import PlayVideo from "../components/PlayVideo";
 import SolveVideo from "../components/SolveVideo";
 import AuditCount from "../components/AuditCount";
@@ -37,11 +36,6 @@ export default new Router({
       path: '/audit',
       name: 'Audit',
       component: Audit
-    },
-    {
-      path: '/test',
-      name: 'Test',
-      component: Test
     },
     {
       path: '/auditCount',
