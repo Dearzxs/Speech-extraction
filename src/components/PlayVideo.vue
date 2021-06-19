@@ -1,41 +1,42 @@
 <template>
   <div class="play-back">
+    <el-container>
     <el-header height="70">
       <div style="float:left;">
-        <h1 style="color: #FFFFFF;margin-left: 50px">文思海辉</h1>
+        <h1 style="color: #FFFFFF;margin-left: 50px">NVOPS</h1>
       </div>
       <div style="float:right;">
         <el-link :underline="false">关于我们</el-link>
-        <el-link :underline="false">教程</el-link>
-        <el-link href="http://localhost:8081/auditCount" :underline="false">审计</el-link>
+        <el-link :underline="false">使用教程</el-link>
         <el-button size="medium" round class="play-button1" style="background-color: transparent;margin-right: 70px">
           admin
         </el-button>
       </div>
     </el-header>
-    <el-main>
-      <div class="play-video">
-        <video-player class="video-player vjs-custom-skin"
-                      ref="videoPlayer"
-                      :playsline="true"
-                      :options="playerOptions"
-                      @play="onPlayerPlay($event)"
-                      @pause="onPlayerPause($event)"
-        >
-        </video-player>
-      </div>
-    </el-main>
-    <el-footer>
-      <div class="typewriter">
-        <div class="typewriter-content">
-          <p class="typewriter-dynamic">
-            <span class="cut"><span class="word" v-for="(letter,index) in words" :key="index">{{ letter }}</span></span>
-          </p>
+    <el-container>
+      <el-aside width="40%">
+        <live2d style="margin-top: 40px;margin-left: 20px"
+          :style="style"
+          :model="[1, 53]"
+          :direction="direction"
+          :size="500"
+        ></live2d>
+      </el-aside>
+      <el-main>
+        <div class="play-video">
+          <video-player class="video-player vjs-custom-skin"
+                        ref="videoPlayer"
+                        :playsline="true"
+                        :options="playerOptions"
+                        @play="onPlayerPlay($event)"
+                        @pause="onPlayerPause($event)"
+          >
+          </video-player>
         </div>
-      </div>
-      <el-button class="play-button2" size="medium" style="background-color: transparent" round @click="dialogVisible = true">完成</el-button>
-    </el-footer>
-
+        <el-button class="play-button2" size="medium" round @click="dialogVisible = true">完成</el-button>
+      </el-main>
+    </el-container>
+    </el-container>
     <el-dialog title="我的项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
       <span>{{ videoInfo }}</span>
       <span slot="footer" class="dialog-footer">
@@ -47,7 +48,13 @@
 </template>
 
 <script>
+
+import live2d from 'vue-live2d'
+
 export default {
+  components: {
+    live2d
+  },
   data() {
     return {
       playVideoUrl: '',
@@ -75,20 +82,20 @@ export default {
         }
       },
 
+
+      direction: 'left',
+      style: '',
+      width: 750,
+      height: 750,
+      tips: {
+        mouseover: [{
+          selector: '.vue-live2d',
+          texts: ['你好，我是AI主播小舞']
+        }]
+      },
+
+
       dialogVisible: false,
-
-      words: [],               //字母数组push，pop的载体
-      str: "嗯",          //str初始化
-      letters: [],             //str分解后的字母数组
-      order: -1,                //表示当前是第几句话
-      stopFlag: 0,
-      lastPlace: -1, //-1表示正常输入， 非-1表示输出上一次结果
-      durations: 0,
-      firstFlag: true,
-
-      jsonData: [],   //字幕json数组
-      jsonLength: 0,  //总句子数
-
       videoInfo: '还有视频文件未处理，是否处理下一文件'
     };
   },
@@ -98,53 +105,9 @@ export default {
     }
   },
   mounted() {
-    this.testData();
-  },
-  watch: {                     //监听order值的变化，改变str的内容
-    order() {
-      this.str = this.jsonData[this.order].text;
-    },
+    // this.testData();
   },
   methods: {
-    // 开始输入
-    beginText(lastPlace) {
-      if (lastPlace === -1) {
-        this.letters = this.str.split("")
-        for (let i = 0; i < this.letters.length; i++) {
-          setTimeout(this.write(i), i * 500);
-        }
-      }
-      if (lastPlace !== -1) {
-        this.letters = this.str.split("")
-        for (let i = lastPlace + 1; i < this.letters.length; i++) {
-          setTimeout(this.write(i), i * 500);
-        }
-        this.lastPlace = -1;
-      }
-    },
-    // 输入字母
-    write(i) {
-      return () => {
-        if (this.stopFlag === 0) {
-          let L = this.letters.length;
-          this.words.push(this.letters[i]);
-          if (i === L - 1) {
-            this.words.splice(0, L)
-            if (this.order === this.jsonLength - 1) {
-              this.order = 0;
-            } else {
-              this.order++;
-            }
-            let that = this;
-            that.beginText(-1);
-          }
-        }
-        if (this.stopFlag === 1) {
-          this.lastPlace = i;
-        }
-      }
-    },
-
     // 获取数据
     testData() {
       this.$axios.get('http://localhost:8081/static/json/test.json')
@@ -177,10 +140,6 @@ export default {
       console.log('player pause!')
     },
 
-    //   onPlayerTimeupdate(player) {
-    //   this.durations = player.cache_.currentTime
-    //   const dura = parseInt(this.durations);
-    // }
     newVideo(){
       this.$message({
         type: "success",
@@ -194,7 +153,7 @@ export default {
 <style scoped lang="less">
 
 .play-back {
-  background-color: #000000;
+  background-image: linear-gradient(to right, #56CCF2, #2F80ED);
   width: 100%;
   height: 100%;
   position: fixed;
@@ -221,24 +180,19 @@ export default {
 }
 
 .play-button2 {
-  float: right;
-  width: 100px;
-  height: 40px;
+  background-color: transparent;
+  float: left;
+  margin-top: 20px;
+  margin-left: 300px;
+  width: 125px;
+  height: 50px;
   color: white;
-  margin-right: 40px;
-  margin-bottom: 40px;
-}
 
-.el-main {
-  width: 75%;
-  height: 70%;
 }
 
 .play-video {
-  width: 55%;
-  margin-left: 180px;
-  border: 1px solid #8cc9ea;
-  background-color: transparent;
+  width: 85%;
+  border: 1px solid #fdfeff;
   text-align: center;
   border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -246,36 +200,11 @@ export default {
 }
 
 .video-player {
-  margin-top: 8%;
+  margin-top: 4%;
   margin-bottom: 4%;
 }
 
 .video-js .vjs-icon-placeholder {
   display: block;
 }
-
-.typewriter {
-  //border: solid 1px #e0acac;
-  box-sizing: border-box;
-  color: #ffffff;
-  text-align: center;
-}
-
-.typewriter-content {
-  font-weight: bold;
-  font-size: 30px;
-  flex-direction: row;
-  letter-spacing: 2px
-}
-
-//光标
-//.typewriter-cursor {
-//  position: absolute;
-//  height: 100%;
-//  width: 3px;
-//  top: 0;
-//  right: -10px;
-//  background-color: #000000;
-//  animation: flash 1.5s linear infinite;
-//}
 </style>

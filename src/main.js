@@ -11,6 +11,7 @@ import './assets/css/iconfont.css';
 import VideoPlayer from 'vue-video-player'
 import 'vue-video-player/src/custom-theme.css'
 import 'video.js/dist/video-js.css'
+import live2d from 'vue-live2d'
 
 import KProgress from 'k-progress';
 
@@ -23,6 +24,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(VueAxios, axios);
 Vue.use(VideoPlayer);
+Vue.use(live2d);
 Vue.component('k-progress', KProgress);
 
 /* eslint-disable no-new */

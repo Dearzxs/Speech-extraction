@@ -2,31 +2,37 @@
   <el-container class="back">
     <el-header height="70">
       <div style="float:left;">
-        <h1 style="color: #FFFFFF;margin-left: 50px">文思海辉</h1>
+        <h1 style="color: #FFFFFF;margin-left: 50px;font-size: 29px;">NVOPS</h1>
       </div>
       <div style="float:right;">
-        <el-link :underline="false">关于我们</el-link>
-        <el-link :underline="false">教程</el-link>
+        <el-link :underline="false">联系我们</el-link>
+        <el-link :underline="false">使用教程</el-link>
         <el-link href="http://localhost:8081/auditCount" :underline="false">审计</el-link>
         <el-button size="medium" round class="main-button1" style="background-color: transparent;margin-right: 70px">
           admin
         </el-button>
       </div>
     </el-header>
-    <el-main>
-      <div class="main-p-1">
-        <p>在这里</p>
-        <p>轻松掌握视频剪辑的技能</p>
-      </div>
-      <div class="main-p-2">
-        <p>音频转化文本</p>
-        <p>高效修改音频</p>
-        <p>适用多种格式视频</p>
-      </div>
-      <div>
-        <el-button class="main-button2" @click="dialogVisible = true">开始使用</el-button>
-      </div>
-    </el-main>
+    <el-container>
+      <el-aside width="600px">
+        <div class="main-p-1">
+          <p>本平台</p>
+          <p>能快速处理新闻视频</p>
+          <p>生成AI主播进行播报</p>
+        </div>
+        <div class="main-p-2">
+          <p>音频->新闻稿文本</p>
+          <p>文本->AI语音播报 && <strong>99%</strong>正确率</p>
+          <p>兼容->适用多种格式视频</p>
+        </div>
+      </el-aside>
+      <el-main>
+        <img src="static/image/news1.png" width="400" style="margin-left: 180px">
+        <div style="margin-left: 150px">
+          <el-button class="main-button2" @click="dialogVisible = true">开始使用</el-button>
+        </div>
+      </el-main>
+    </el-container>
 
     <el-dialog title="新建项目" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
       <el-upload
@@ -87,41 +93,41 @@ export default {
     solveData() {
       this.dialogVisible=false;
       this.startTime();
-      // this.uploadVisible=true;
-      this.uploadForm = new FormData();
-      for (let i = 0; i < this.fileList.length; i++) {
-        this.uploadForm.append('uploadFile', this.fileList[i].raw);
-      }
-      const userId = sessionStorage.getItem('userId');
+      this.uploadVisible=true;//显示进度条
+      // this.uploadForm = new FormData();
+      // for (let i = 0; i < this.fileList.length; i++) {
+      //   this.uploadForm.append('uploadFile', this.fileList[i].raw);
+      // }
+      // const userId = sessionStorage.getItem('userId');
       // this.uploadForm.append("userId", userId);
-      this.uploadForm.append("userId", "admin");
-      this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
-        if (res.status === 200) {
-          const jsonArr = res.data.textParaList;
-          const originalVideo = res.data.originalVideo;
-          sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
-          this.$message({
-            type: "success",
-            message: "上传成功"
-          });
+      // this.uploadForm.append("userId", "admin");
+      // this.$axios.post('file/fileUpload/ds', this.uploadForm).then((res) => {
+      //   if (res.status === 200) {
+      //     const jsonArr = res.data.textParaList;
+      //     const originalVideo = res.data.originalVideo;
+      //     sessionStorage.setItem('sourceText', JSON.stringify(jsonArr));
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传成功"
+      //     });
           // this.uploadVisible=false;
-          this.$router.push('/solveVideo');
-        }
-        else{
-          this.uploadVisible=false;
-          this.$message({
-            type: "error",
-            message: "解析失败，请重新上传"
-          });
-        }
-      }).catch(err => {
-        console.log(err);
-        this.uploadVisible=false;
-        this.$message({
-          type: "error",
-          message: "发送请求失败，请检查网络连接"
-        });
-      });
+      //     this.$router.push('/solveVideo');
+      //   }
+      //   else{
+      //     this.uploadVisible=false;
+      //     this.$message({
+      //       type: "error",
+      //       message: "解析失败，请重新上传"
+      //     });
+      //   }
+      // }).catch(err => {
+      //   console.log(err);
+      //   this.uploadVisible=false;
+      //   this.$message({
+      //     type: "error",
+      //     message: "发送请求失败，请检查网络连接"
+      //   });
+      // });
     },
 
     startTime(){
@@ -134,9 +140,12 @@ export default {
           if(this.percent === 50) this.processInfo="第二片处理完成"
           if(this.percent === 70) this.processInfo="第三片处理完成"
           if(this.percent === 90) this.processInfo="正在存储文本"
-          if(this.percent === 100){
-            this.processInfo = "文本存储完成"
+          if(this.percent === 99){
+            this.processInfo = "视频提取即将完成"
             this.ifUp = false
+            //测试用
+            this.uploadVisible=false;
+            this.$router.push('/solveVideo');
           }
         }
         // else {
@@ -165,7 +174,7 @@ export default {
 
 <style scoped>
 .back {
-  background-color: #000000;
+  background-image: linear-gradient(to right, #56CCF2, #2F80ED);
   width: 100%;
   height: 100%;
   position: fixed;
@@ -175,17 +184,24 @@ export default {
 .main-p-1 {
   letter-spacing: 8px;
   margin-left: 150px;
-  margin-top: 120px;
+  margin-top: 72px;
   color: #FFFFFF;
   font-size: 32px;
 }
 
 .main-p-2 {
   margin-left: 150px;
-  margin-top: 80px;
+  margin-top: 85px;
   color: #FFFFFF;
-  font-size: 14px;
+  font-size: 18px;
 }
+
+.img1{
+  width: 100px;
+  height: 100px;
+  background-size: 100px auto;
+}
+
 
 .el-header {
   margin-top: 20px;
@@ -213,7 +229,7 @@ export default {
   height: 50px;
   font-size: 19px;
   color: #FFFFFF;
-  background-color: #d7b542;
+  background-color: #2da6c4;
   border-radius: 10px;
 }
 

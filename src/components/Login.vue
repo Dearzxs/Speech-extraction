@@ -1,7 +1,7 @@
 <template>
   <div class="back-login">
     <el-form :model="form" :rules="rules" ref="loginForm" label-width="100px" class="login-box">
-      <h3 class="login-title">欢迎使用教学视频语音提取文本系统</h3>
+      <h3 class="login-title">欢迎使用新闻视频处理系统</h3>
       <el-form-item label="账号" prop="username">
         <el-input v-model="form.username"></el-input>
       </el-form-item>
@@ -50,15 +50,20 @@ export default {
         "userId":this.form.username,
         "userPwd":this.form.password
       });
-      this.$axios.post('login/judge',param).then(res => {
-        if (res.data === 'success') {
-          sessionStorage.setItem('userId', this.form.username);
-          this.$router.push('/')
-          alert('登陆成功')
-        } else {
-          alert('登录失败，请检查用户名和密码')
-        }
-      })
+
+      //测试用
+      this.$router.push('/')
+      alert('登陆成功')
+      //上线代码
+      // this.$axios.post('login/judge',param).then(res => {
+      //   if (res.data === 'success') {
+      //     sessionStorage.setItem('userId', this.form.username);
+      //     this.$router.push('/')
+      //     alert('登陆成功')
+      //   } else {
+      //     alert('登录失败，请检查用户名和密码')
+      //   }
+      // })
     },
     handleClose: function () {
       console.log("Handle Close，空函数");
