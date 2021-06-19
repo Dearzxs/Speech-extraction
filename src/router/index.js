@@ -31,6 +31,16 @@ export default new Router({
       path: '/solveVideo',
       name: 'SolveVideo',
       component: SolveVideo
+    },
+    {
+      path: '/audit',
+      name: 'Audit',
+      component: Audit
+    },
+    {
+      path: '/auditCount',
+      name: 'AuditCount',
+      component: AuditCount
     }
   ]
 })

@@ -1,11 +1,12 @@
 <template>
   <el-container class="back">
     <el-header>
-      <div style="float:left;">
-        <h1 style="color: #FFFFFF;font-size: 30px;margin-left: 20px;">NVOPS</h1>
-      </div>
+      <div class="el-icon-coin"></div>
       <div class="project-name">
         {{ projectName }}
+      </div>
+      <div class="project-icon">
+        <i class="el-icon-edit-outline"></i>
       </div>
       <div class="nav">
         <el-button size="medium" round class="project-button1" @click="login()">admin</el-button>
@@ -105,7 +106,7 @@ export default {
     }
   },
   mounted() {
-    // this.getData();
+    this.getData();
   },
   methods: {
     login() {
@@ -120,37 +121,37 @@ export default {
     submitForm(){
       this.startTime();
       this.uploadVisible=true;
-      // this.diffFormData();
-      // this.$axios.post('/syn/speech',this.editData).then((res) => {
-      //   if (res.status === 200) {
-      //     this.VideoAddress=res.data;
-      //     this.$message({
-      //       message: '视频处理完成',
-      //       type: 'success'
-      //     });
-      //     this.uploadVisible=false;
-      //     this.$router.push({
-      //       path: '/playVideo',
-      //       query: {
-      //         VideoAddress: this.VideoAddress
-      //       }
-      //     })
-      //   }
-      //   else {
-      //     this.uploadVisible=false;
-      //     this.$message({
-      //       type: "error",
-      //       message: "视频处理失败"
-      //     });
-      //   }
-      // }).catch(err => {
-      //   console.log(err);
-      //   this.uploadVisible=false;
-      //   this.$message({
-      //     type: "error",
-      //     message: "视频处理失败"
-      //   });
-      // });
+      this.diffFormData();
+      this.$axios.post('/syn/speech',this.editData).then((res) => {
+        if (res.status === 200) {
+          this.VideoAddress=res.data;
+          this.$message({
+            message: '视频处理完成',
+            type: 'success'
+          });
+          this.uploadVisible=false;
+          this.$router.push({
+            path: '/playVideo',
+            query: {
+              VideoAddress: this.VideoAddress
+            }
+          })
+        }
+        else {
+          this.uploadVisible=false;
+          this.$message({
+            type: "error",
+            message: "视频处理失败"
+          });
+        }
+      }).catch(err => {
+        console.log(err);
+        this.uploadVisible=false;
+        this.$message({
+          type: "error",
+          message: "视频处理失败"
+        });
+      });
     },
 
     edit(row, index) {
@@ -189,10 +190,9 @@ export default {
           if(this.percent === 10) this.processInfo="正在语音合成"
           if(this.percent === 30) this.processInfo="正在进行音视频转换"
           if(this.percent === 95) this.processInfo="正在存储视频"
-          if(this.percent === 99){
-            this.processInfo = "视频存储即将完成"
+          if(this.percent === 100){
+            this.processInfo = "视频存储完成"
             this.ifUp = false
-            this.$router.push('/playVideo');
           }
         }
         // else {
@@ -222,28 +222,45 @@ export default {
 <style lang="less">
 
 .back {
-  background-image: linear-gradient(to right, #56CCF2, #2F80ED);
+  background-color: #262626;
   width: 100%;
   height: 100%;
   position: fixed;
   background-size: 100% 100%;
 }
 
+.el-header {
+  margin-top: 20px;
+}
+
+.el-icon-coin {
+  float: left;
+  font-size: 35px;
+  color: #FFFFFF;
+}
+
 .project-name {
   font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   float: left;
   margin-left: 600px;
-  margin-top: 20px;
   width: 200px;
   height: 40px;
-  font-size: 23px;
+  font-size: 25px;
+  color: #FFFFFF;
+}
+
+.project-icon {
+  float: left;
+  margin-left: 60px;
+  width: 200px;
+  height: 40px;
+  font-size: 30px;
   color: #FFFFFF;
 }
 
 .nav {
   float: left;
-  margin-left: 400px;
-  margin-top: 20px;
+  margin-left: 250px;
   width: 100px;
   height: 40px;
 }
